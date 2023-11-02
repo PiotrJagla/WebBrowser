@@ -174,11 +174,13 @@ class LayoutBox {
 
     }
 
-
     private void layoutBlockChildren() {
         for (LayoutBox child : getChildren()) {
             child.layout(dimensions);
             dimensions.getContent().height = dimensions.getContent().height + child.getDimensions().marginBox().height;
+            if(child.getDimensions().marginBox().height == dimensions.getContent().height) {
+                dimensions.getContent().height += 20.0f;
+            }
         }
 
     }
@@ -188,11 +190,6 @@ class LayoutBox {
             Length h = (Length) getBoxType().getStyledNode().value("height");
             if(h.getUnit() == Px) {
                 dimensions.getContent().height = h.getLength();
-            }
-        }
-        else {
-            if(getBoxType().getStyledNode().getNode() instanceof TextNode) {
-                dimensions.getContent().height = 20.0f;
             }
         }
 

@@ -22,8 +22,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(true);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		shapeRenderer = new ShapeRenderer();
 		img = new Texture("badlogic.jpg");
 		//HTML parser
@@ -35,9 +35,8 @@ public class MyGdxGame extends ApplicationAdapter {
 //				"</div>" +
 //				"</body>" +
 //				"</html>";
-		String HTMLinput = "<div><div><div><div><div>1</div>2</div>3</div>4</div>5</div>";
+		String HTMLinput = "<div><div><div><div><div class=\"a\"></div></div></div></div></div>";
 		HTMLParser parser = new HTMLParser(HTMLinput);
-		HTMLParser parser1 = new HTMLParser("<div name=\"this is name\" class=\"firstClass\" > Hello </div>");
 		Node root = parser.parse();
 
 //        CSSParser
@@ -46,7 +45,8 @@ public class MyGdxGame extends ApplicationAdapter {
 //						".ltest {color:#cc0011; margin: 20px; }" +
 //						"p{display:block; padding: 20px; }";
 
-		String cssInput ="* {padding: 12px;}";
+//		String cssInput ="* {padding: 10px;} .a {height: 20px;}";
+		String cssInput ="* {padding: 10px;} .a {height: 20px;}";
 
 		CSSParser cssParser = new CSSParser(
 				cssInput
@@ -72,13 +72,13 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
-		for (DisplayCommand d : list) {
-			SolidColor sc = (SolidColor)d;
+		for (int i = 0 ; i < list.size() ; ++i){
+			SolidColor sc = (SolidColor)list.get(i);
 			Rectangle r = sc.getRect();
 			CSSColor c = sc.getColor();
 			shapeRenderer.setProjectionMatrix(camera.combined);
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			shapeRenderer.setColor(new Color(c.getR() / 255.0f,c.getG() / 255.0f,c.getB() / 255.0f,1));
+			shapeRenderer.setColor(new Color(c.getR() / 255.0f,c.getG() / 255.0f,c.getB() / 255.0f,c.getA()/255));
 			shapeRenderer.rect(r.x, r.y, r.width, r.height);
 //			shapeRenderer.rect(0,0,100,100);
 			shapeRenderer.end();
