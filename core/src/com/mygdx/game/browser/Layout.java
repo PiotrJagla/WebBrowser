@@ -177,10 +177,7 @@ class LayoutBox {
     private void layoutBlockChildren() {
         for (LayoutBox child : getChildren()) {
             child.layout(dimensions);
-            dimensions.getContent().height = dimensions.getContent().height + child.getDimensions().marginBox().height;
-            if(child.getDimensions().marginBox().height == dimensions.getContent().height) {
-                dimensions.getContent().height += 20.0f;
-            }
+            dimensions.getContent().height +=  child.getDimensions().marginBox().height;
         }
 
     }
@@ -314,22 +311,23 @@ class Dimensions{
     private EdgeSizes border = new EdgeSizes();
     private EdgeSizes margin = new EdgeSizes();
 
-    public Rectangle marginBox() {
-        return expandBy(margin);
-    }
+
     public Rectangle paddingBox() {
-        return expandBy(padding);
+        return expandRectBy(content, padding);
     }
     public Rectangle borderBox() {
-        return expandBy(border);
+        return expandRectBy(paddingBox(), border);
+    }
+    public Rectangle marginBox() {
+        return expandRectBy(borderBox(), margin);
     }
 
-    private Rectangle expandBy(EdgeSizes edge) {
+    private Rectangle expandRectBy(Rectangle rect, EdgeSizes edge) {
         Rectangle res = new Rectangle();
-        res.x = content.x + edge.getLeft();
-        res.y = content.y + edge.getTop();
-        res.width = content.width + edge.getLeft() + edge.getRight();
-        res.height = content.height + edge.getTop() + edge.getBottom();
+        res.x = rect.x + edge.getLeft();
+        res.y = rect.y + edge.getTop();
+        res.width = rect.width + edge.getLeft() + edge.getRight();
+        res.height = rect.height + edge.getTop() + edge.getBottom();
         return res;
     }
 

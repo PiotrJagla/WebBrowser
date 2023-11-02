@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import javax.swing.text.html.CSS;
+import java.io.*;
 import java.util.List;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -26,31 +28,31 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		shapeRenderer = new ShapeRenderer();
 		img = new Texture("badlogic.jpg");
-		//HTML parser
-//		String HTMLinput = "<html>" +
-//				"<body>" +
-//				"<h1>Title</h1>" +
-//				"<div id=\"main\" class=\"ltest\">" +
-//				"<p>Hello <em>world</em>!</p>" +
-//				"</div>" +
-//				"</body>" +
-//				"</html>";
-		String HTMLinput = "<div><div><div><div><div class=\"a\"></div></div></div></div></div>";
-		HTMLParser parser = new HTMLParser(HTMLinput);
-		Node root = parser.parse();
+
+		//HTML htmlParser
+		String HTMLInput = "";
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("index.html"));
+			String line;
+			while((line = br.readLine()) != null) {
+				HTMLInput += line;
+			}
+		} catch (Exception e) {
+		}
+		HTMLParser htmlParser = new HTMLParser(HTMLInput);
+		Node root = htmlParser.parse();
 
 //        CSSParser
-//		String cssInput =
-//				"h1 { padding: auto; }" +
-//						".ltest {color:#cc0011; margin: 20px; }" +
-//						"p{display:block; padding: 20px; }";
-
-//		String cssInput ="* {padding: 10px;} .a {height: 20px;}";
-		String cssInput ="* {padding: 10px;} .a {height: 20px;}";
-
-		CSSParser cssParser = new CSSParser(
-				cssInput
-		);
+		String CSSInput = "";
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("style.css"));
+			String line;
+			while((line = br.readLine()) != null) {
+				CSSInput += line;
+			}
+		} catch (Exception e) {
+		}
+		CSSParser cssParser = new CSSParser(CSSInput);
 		Stylesheet stylesheet = cssParser.parse();
 
 		//Styling DOM tree
@@ -60,7 +62,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//Layout
 		Layout layout = new Layout();
 		Dimensions viewport = new Dimensions();
-		viewport.getContent().width = 800;
+		viewport.getContent().width = 700;
 		viewport.getContent().height = 600;
 		LayoutBox layoutRoot = layout.layoutTree(styledTreeRoot, viewport);
 

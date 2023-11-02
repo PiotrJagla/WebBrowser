@@ -88,12 +88,15 @@ public class HTMLParser {
 
     private String parseAttr() {
         String name = parseTagName();
+        consumeWhitespace();
         consume();
+        consumeWhitespace();
         String value = parseAttrValue();
         return name + "#" + value;
     }
 
     private String parseAttrValue() {
+        consumeWhitespace();
         char openQ = consume();
         String value = consumeUntil(c -> c != openQ);
         consume();

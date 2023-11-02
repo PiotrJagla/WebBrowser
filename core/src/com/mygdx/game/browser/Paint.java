@@ -34,9 +34,6 @@ public class Paint {
             SolidColor sc = new SolidColor();
 
             sc.setColor(new CSSColor());
-//            if(layoutRoot.getBoxType().getStyledNode().getNode() instanceof TextNode) {
-//                sc.getColor().setA(0);
-//            }
             sc.setRect(layoutRoot.getDimensions().borderBox());
             list.add(sc);
 
