@@ -15,7 +15,7 @@ public class Paint {
 
     private void renderLayoutBox(List<DisplayCommand> list, LayoutBox layoutRoot) {
         renderBackground(list, layoutRoot);
-        renderBorders(list, layoutRoot);
+//        renderBorders(list, layoutRoot);
 
         for (LayoutBox child : layoutRoot.getChildren()) {
             renderLayoutBox(list,child);
@@ -23,7 +23,7 @@ public class Paint {
     }
 
     private void renderBackground(List<DisplayCommand> list, LayoutBox layoutRoot) {
-        Color color = getColor(layoutRoot, "background");
+        CSSColor color = getColor(layoutRoot, "background");
         if(color != null) {
             SolidColor sc = new SolidColor();
             sc.setColor(color);
@@ -33,7 +33,7 @@ public class Paint {
         else {
             SolidColor sc = new SolidColor();
 
-            sc.setColor(new Color());
+            sc.setColor(new CSSColor());
             sc.setRect(layoutRoot.getDimensions().borderBox());
             list.add(sc);
 
@@ -41,9 +41,9 @@ public class Paint {
     }
 
     private void renderBorders(List<DisplayCommand> list, LayoutBox layoutRoot) {
-        Color color = getColor(layoutRoot, "border-color");
+        CSSColor color = getColor(layoutRoot, "border-color");
         if(color == null) {
-            color = new Color();
+            color = new CSSColor();
         }
 
         Dimensions d = layoutRoot.getDimensions();
@@ -92,13 +92,13 @@ public class Paint {
         sc.setColor(color);
     }
 
-    private Color getColor(LayoutBox layoutBox, String name) {
+    private CSSColor getColor(LayoutBox layoutBox, String name) {
         switch(layoutBox.getBoxType().getBoxTypeName()) {
             case BlockNode:
             case InlineNode:
                 Value v = layoutBox.getBoxType().getStyledNode().value(name);
-                if(v instanceof Color) {
-                    return (Color) v;
+                if(v instanceof CSSColor) {
+                    return (CSSColor) v;
                 }
                 else {
                     return null;
@@ -117,14 +117,14 @@ abstract class DisplayCommand {
 }
 
 class SolidColor extends DisplayCommand {
-    private Color color = new Color();
+    private CSSColor color = new CSSColor();
     private Rectangle rect = new Rectangle();
 
-    public Color getColor() {
+    public CSSColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(CSSColor color) {
         this.color = color;
     }
 

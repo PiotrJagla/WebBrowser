@@ -1,5 +1,7 @@
 package com.mygdx.game.browser;
 
+import static com.mygdx.game.browser.Unit.Px;
+
 public abstract class Value {
 }
 
@@ -18,6 +20,16 @@ class Keyword extends Value{
 class Length extends Value{
     private float length;
     private Unit unit;
+
+    public Length() {
+        length = 0.0f;
+        unit = Px;
+
+    }
+    public Length(float length, Unit unit) {
+        this.length = length;
+        this.unit = unit;
+    }
 
     public float getLength() {
         return length;
@@ -41,7 +53,7 @@ enum Unit{
     Px
 }
 
-class Color extends Value{
+class CSSColor extends Value{
     private int r = Utils.getRandomInt(0,255);
     private int g = Utils.getRandomInt(0,255);
     private int b = Utils.getRandomInt(0,255);

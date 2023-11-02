@@ -180,12 +180,12 @@ public class CSSParser {
         throw new RuntimeException("unrecognized unit in parseUnit()");
     }
 
-    private Color parseColor() {
+    private CSSColor parseColor() {
         if(consume() != '#') {
             throw new RuntimeException("Bad identifier for color, should be #");
         }
 
-        Color c = new Color();
+        CSSColor c = new CSSColor();
         c.setR(parseHexPair());
         c.setG(parseHexPair());
         c.setB(parseHexPair());

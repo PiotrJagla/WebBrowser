@@ -8,7 +8,14 @@ import java.util.List;
 import static com.mygdx.game.browser.Unit.Px;
 
 public class Layout {
-    public LayoutBox buildLayoutTree(StyledNode styledNode) {
+
+    public LayoutBox layoutTree(StyledNode root, Dimensions containingBlock) {
+        containingBlock.getContent().height = 0.0f;
+        LayoutBox layoutRoot = buildLayoutTree(root);
+        layoutRoot.layout(containingBlock);
+        return layoutRoot;
+    }
+    private LayoutBox buildLayoutTree(StyledNode styledNode) {
         LayoutBox root = new LayoutBox();
         BoxType boxType = new BoxType();
         switch(styledNode.getDisplay()) {
@@ -76,28 +83,24 @@ class LayoutBox {
             widthValue = auto;
         }
 
-        Length zero = new Length();
-        zero.setUnit(Px);
-        zero.setLength(0.0f);
+        Value marginLeft = lookup(sn, "margin-left", "margin", "", new Length());
+        Value marginRight = lookup(sn, "margin-right", "margin", "", new Length());
 
-        Value marginLeft = lookup(sn, "margin-left", "margin", "", zero);
-        Value marginRight = lookup(sn, "margin-right", "margin", "", zero);
+        Value borderLeft = lookup(sn, "border-left-width", "border-width", "", new Length());
+        Value borderRight = lookup(sn, "border-right-width", "border-width", "", new Length());
 
-        Value borderLeft = lookup(sn, "border-left-width", "border-width", "", zero);
-        Value borderRight = lookup(sn, "border-right-width", "border-width", "", zero);
-
-        Value paddingLeft = lookup(sn, "padding-left", "padding", "", zero);
-        Value paddingRight = lookup(sn, "padding-right", "padding", "", zero);
+        Value paddingLeft = lookup(sn, "padding-left", "padding", "", new Length());
+        Value paddingRight = lookup(sn, "padding-right", "padding", "", new Length());
 
         float total = toPx(marginLeft) + toPx(marginRight) + toPx(borderLeft) + toPx(borderRight) + toPx(paddingLeft) + toPx(paddingRight);
 
 
         if(!(widthValue instanceof Keyword) && total > containingBlock.getContent().width) {
             if(marginLeft instanceof Keyword) {
-                marginLeft = zero;
+                marginLeft = new Length();
             }
             if(marginRight instanceof Keyword) {
-                marginRight = zero;
+                marginRight = new Length();
             }
         }
 
@@ -106,89 +109,93 @@ class LayoutBox {
         boolean isMarginLeftAuto = marginLeft instanceof Keyword;
         boolean isMarginRightAuto = marginRight instanceof Keyword;
         if(!isWidthAuto && !isMarginLeftAuto && !isMarginRightAuto) {
-            Length l = new Length();
-            l.setLength(toPx(marginRight) + underflow);
-            l.setUnit(Px);
-            marginRight = l;
+            marginRight = new Length(toPx(marginRight) + underflow, Px);
         }
         else if(!isWidthAuto && !isMarginLeftAuto && isMarginRightAuto) {
-            Length l = new Length();
-            l.setLength(underflow);
-            l.setUnit(Px);
-            marginRight = l;
+            marginRight = new Length(underflow, Px);
         }
         else if(!isWidthAuto && isMarginLeftAuto && !isMarginRightAuto) {
-            Length l = new Length();
-            l.setLength(underflow);
-            l.setUnit(Px);
-            marginLeft = l;
+            marginLeft = new Length(underflow, Px);
         }
         else if(isWidthAuto) {
             if(marginLeft instanceof Keyword) {
-                Length l = new Length();
-                l.setLength(0.0f);
-                l.setUnit(Px);
-                marginLeft = l;
+                marginLeft = new Length();
             }
             if(marginRight instanceof Keyword) {
-                Length l = new Length();
-                l.setLength(0.0f);
-                l.setUnit(Px);
-                marginRight = l;
+                marginRight = new Length();
             }
 
             if(underflow >= 0.0f) {
-                Length l = new Length();
-                l.setLength(underflow);
-                l.setUnit(Px);
-                widthValue = l;
+                widthValue = new Length(underflow, Px);
             } else {
-                Length l = new Length();
-                l.setLength(0.0f);
-                l.setUnit(Px);
-                widthValue = l;
-
-                l = new Length();
-                l.setLength(toPx(marginRight) + underflow);
-                l.setUnit(Px);
-                marginRight = l;
+                widthValue = new Length();
+                marginRight = new Length(toPx(marginRight) + underflow, Px);
             }
 
         }
         else if(!isWidthAuto && isMarginLeftAuto && isMarginRightAuto) {
-            Length l = new Length();
-            l.setLength(underflow / 2.0f);
-            l.setUnit(Px);
-            marginLeft = l;
-
-            l = new Length();
-            l.setLength(underflow / 2.0f);
-            l.setUnit(Px);
-            marginRight = l;
-
+            marginLeft = new Length(underflow/2.0f, Px);
+            marginRight = new Length(underflow/2.0f, Px);
         }
+
+        dimensions.getContent().width = toPx(widthValue);
+
+        dimensions.getPadding().setLeft(toPx(paddingLeft));
+        dimensions.getPadding().setRight(toPx(paddingRight));
+
+        dimensions.getBorder().setLeft(toPx(borderLeft));
+        dimensions.getBorder().setRight(toPx(borderRight));
+
+        dimensions.getMargin().setLeft(toPx(marginLeft));
+        dimensions.getMargin().setRight(toPx(marginRight));
 
     }
 
     private void calculateBlockPosition(Dimensions containingBlock) {
         StyledNode sn = getBoxType().getStyledNode();
-        Dimensions d = getDimensions();
 
-        Length zero = new Length();
-        zero.setUnit(Px);
-        zero.setLength(0.0f);
 
-        d.getMargin().setTop(toPx(lookup(sn, "margin-top", "margin", "", zero)));
-        d.getMargin().setBottom(toPx(lookup(sn, "margin-bottom", "margin", "", zero)));
+        dimensions.getMargin().setTop(toPx(lookup(sn, "margin-top", "margin", "", new Length())));
+        dimensions.getMargin().setBottom(toPx(lookup(sn, "margin-bottom", "margin", "", new Length())));
 
-        d.getBorder().setTop(toPx(lookup(sn, "border-top-width", "border-width", "", zero)));
-        d.getBorder().setBottom(toPx(lookup(sn, "border-bottom-width", "border-width", "", zero)));
+        dimensions.getBorder().setTop(toPx(lookup(sn, "border-top-width", "border-width", "", new Length())));
+        dimensions.getBorder().setBottom(toPx(lookup(sn, "border-bottom-width", "border-width", "", new Length())));
 
-        d.getPadding().setTop(toPx(lookup(sn, "padding-top", "padding", "", zero)));
-        d.getPadding().setBottom(toPx(lookup(sn, "padding-bottom", "padding", "", zero)));
+        dimensions.getPadding().setTop(toPx(lookup(sn, "padding-top", "padding", "", new Length())));
+        dimensions.getPadding().setBottom(toPx(lookup(sn, "padding-bottom", "padding", "", new Length())));
 
-        d.getContent().x = containingBlock.getContent().x + d.getMargin().getLeft() + d.getBorder().getLeft() + d.getPadding().getLeft();
-        d.getContent().y = containingBlock.getContent().height + containingBlock.getContent().y + d.getMargin().getTop() + d.getBorder().getTop() + d.getPadding().getTop();
+        dimensions.getContent().x = containingBlock.getContent().x +
+                dimensions.getMargin().getLeft() +
+                dimensions.getBorder().getLeft() + dimensions.getPadding().getLeft();
+        dimensions.getContent().y = containingBlock.getContent().height + containingBlock.getContent().y +
+                dimensions.getMargin().getTop() +
+                dimensions.getBorder().getTop() +
+                dimensions.getPadding().getTop();
+
+    }
+
+
+    private void layoutBlockChildren() {
+        for (LayoutBox child : getChildren()) {
+            child.layout(dimensions);
+            dimensions.getContent().height = dimensions.getContent().height + child.getDimensions().marginBox().height;
+        }
+
+    }
+
+    private void calculateBlockHeight() {
+        if(getBoxType().getStyledNode().value("height") instanceof Length) {
+            Length h = (Length) getBoxType().getStyledNode().value("height");
+            if(h.getUnit() == Px) {
+                dimensions.getContent().height = h.getLength();
+            }
+        }
+        else {
+            if(getBoxType().getStyledNode().getNode() instanceof TextNode) {
+                dimensions.getContent().height = 20.0f;
+            }
+        }
+
 
     }
 
@@ -213,27 +220,6 @@ class LayoutBox {
         else {
             return 0.0f;
         }
-    }
-
-
-    private void layoutBlockChildren() {
-        Dimensions d = getDimensions();
-        for (LayoutBox child : getChildren()) {
-            child.layout(d);
-            d.getContent().height = d.getContent().height + child.getDimensions().marginBox().height;
-        }
-
-    }
-
-    private void calculateBlockHeight() {
-        if(getBoxType().getStyledNode().value("height") instanceof Length) {
-            Length h = (Length) getBoxType().getStyledNode().value("height");
-            if(h.getUnit() == Px) {
-                dimensions.getContent().height = h.getLength();
-            }
-        }
-
-
     }
 
 
@@ -299,7 +285,7 @@ enum Display{
 }
 
 class BoxType{
-    private BoxTypeName boxTypeName;
+    private BoxTypeName boxTypeName =BoxTypeName.BlockNode;
     private StyledNode styledNode;
 
     public BoxTypeName getBoxTypeName() {

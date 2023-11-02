@@ -95,7 +95,6 @@ public class HTMLParser {
 
     private String parseAttrValue() {
         char openQ = consume();
-        System.out.println(openQ);
         String value = consumeUntil(c -> c != openQ);
         consume();
         return value;

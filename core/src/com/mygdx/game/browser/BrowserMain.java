@@ -34,7 +34,10 @@ public class BrowserMain {
 
         //Layout
         Layout layout = new Layout();
-        LayoutBox layoutRoot = layout.buildLayoutTree(styledTreeRoot);
+        Dimensions viewport = new Dimensions();
+        viewport.getContent().width = 800;
+        viewport.getContent().height = 600;
+        LayoutBox layoutRoot = layout.layoutTree(styledTreeRoot, viewport);
         System.out.println("Layout done");
         Paint paint = new Paint();
         List<DisplayCommand> list = paint.buildDisplayList(layoutRoot);

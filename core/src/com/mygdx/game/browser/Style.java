@@ -1,5 +1,6 @@
 package com.mygdx.game.browser;
 
+import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class Style {
         //Matches simple selector
 
         if(elem.getTagName().equals("div")) {
-            System.out.println("here");
+            int x = 0;
         }
         //TODO: change this matched function when whole engine is ready
         if(!selector.getTagName().equals("") && !selector.getTagName().equals(elem.getTagName())) {
@@ -156,15 +157,15 @@ class StyledNode {
     }
 
     public Display getDisplay() {
-        if(!(value("display") instanceof Keyword)){
-            return Display.Inline;
+        if(!(value("display") instanceof Keyword)) {
+            return Display.Block;
         }
         Keyword k = (Keyword) value("display");
-        if(k.getK().equals("block")) {
-            return Display.Block;
+        if(k.getK().equals("inline")) {
+            return Display.Inline;
         } else if (k.getK().equals("none")) {
             return Display.None;
         }
-        return Display.Inline;
+        return Display.Block;
     }
 }
