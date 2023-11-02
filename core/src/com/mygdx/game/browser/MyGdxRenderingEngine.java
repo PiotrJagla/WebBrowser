@@ -4,11 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygdx.game.browser.*;
 
 import java.util.List;
-
-import static com.mygdx.game.browser.BrowserMain.printTree;
 
 public class MyGdxRenderingEngine extends ApplicationAdapter {
 

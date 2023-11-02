@@ -2,7 +2,6 @@ package com.mygdx.game.browser;
 
 import com.badlogic.gdx.math.Rectangle;
 
-import javax.crypto.spec.ChaCha20ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 
