@@ -1,16 +1,16 @@
 package org.example.browser;
 
-import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mygdx.game.browser.Unit.Px;
+import static org.example.browser.Unit.Px;
+
 
 public class Layout {
 
     public LayoutBox layoutTree(StyledNode root, Dimensions containingBlock) {
-        containingBlock.getContent().height = 0.0f;
+        containingBlock.getContent().setHeight(  0.0f);
         LayoutBox layoutRoot = buildLayoutTree(root);
         layoutRoot.layout(containingBlock);
         return layoutRoot;
@@ -95,7 +95,7 @@ class LayoutBox {
         float total = toPx(marginLeft) + toPx(marginRight) + toPx(borderLeft) + toPx(borderRight) + toPx(paddingLeft) + toPx(paddingRight);
 
 
-        if(!(widthValue instanceof Keyword) && total > containingBlock.getContent().width) {
+        if(!(widthValue instanceof Keyword) && total > containingBlock.getContent().width()) {
             if(marginLeft instanceof Keyword) {
                 marginLeft = new Length();
             }
@@ -104,7 +104,7 @@ class LayoutBox {
             }
         }
 
-        float underflow = containingBlock.getContent().width - total;
+        float underflow = containingBlock.getContent().width() - total;
         boolean isWidthAuto = widthValue instanceof Keyword;
         boolean isMarginLeftAuto = marginLeft instanceof Keyword;
         boolean isMarginRightAuto = marginRight instanceof Keyword;
@@ -138,7 +138,7 @@ class LayoutBox {
             marginRight = new Length(underflow/2.0f, Px);
         }
 
-        dimensions.getContent().width = toPx(widthValue);
+        dimensions.getContent().setWidth( toPx(widthValue));
 
         dimensions.getPadding().setLeft(toPx(paddingLeft));
         dimensions.getPadding().setRight(toPx(paddingRight));
@@ -164,20 +164,20 @@ class LayoutBox {
         dimensions.getPadding().setTop(toPx(lookup(sn, "padding-top", "padding", "", new Length())));
         dimensions.getPadding().setBottom(toPx(lookup(sn, "padding-bottom", "padding", "", new Length())));
 
-        dimensions.getContent().x = containingBlock.getContent().x +
+        dimensions.getContent().setX( containingBlock.getContent().x() +
                 dimensions.getMargin().getLeft() +
-                dimensions.getBorder().getLeft() + dimensions.getPadding().getLeft();
-        dimensions.getContent().y = containingBlock.getContent().height + containingBlock.getContent().y +
+                dimensions.getBorder().getLeft() + dimensions.getPadding().getLeft());
+        dimensions.getContent().setY( containingBlock.getContent().height() + containingBlock.getContent().y() +
                 dimensions.getMargin().getTop() +
                 dimensions.getBorder().getTop() +
-                dimensions.getPadding().getTop();
+                dimensions.getPadding().getTop());
 
     }
 
     private void layoutBlockChildren() {
         for (LayoutBox child : getChildren()) {
             child.layout(dimensions);
-            dimensions.getContent().height +=  child.getDimensions().marginBox().height;
+            dimensions.getContent().setHeight( dimensions.getContent().height() +  child.getDimensions().marginBox().height());
         }
 
     }
@@ -186,7 +186,7 @@ class LayoutBox {
         if(getBoxType().getStyledNode().value("height") instanceof Length) {
             Length h = (Length) getBoxType().getStyledNode().value("height");
             if(h.getUnit() == Px) {
-                dimensions.getContent().height = h.getLength();
+                dimensions.getContent().setHeight( h.getLength());
             }
         }
 
@@ -305,6 +305,51 @@ enum BoxTypeName{
     AnonymusBlock,
 }
 
+
+class Rectangle{
+    private float x;
+    private float y;
+    private float width;
+    private float height;
+
+    public float x() {
+        return x;
+    }
+
+    public Rectangle setX(float x) {
+        this.x = x;
+        return this;
+    }
+
+    public float y() {
+        return y;
+    }
+
+    public Rectangle setY(float y) {
+        this.y = y;
+        return this;
+    }
+
+    public float width() {
+        return width;
+    }
+
+    public Rectangle setWidth(float width) {
+        this.width = width;
+        return this;
+    }
+
+    public float height() {
+        return height;
+    }
+
+    public Rectangle setHeight(float height) {
+        this.height = height;
+        return this;
+    }
+}
+
+
 class Dimensions{
     private Rectangle content = new Rectangle();
     private EdgeSizes padding = new EdgeSizes();
@@ -324,10 +369,10 @@ class Dimensions{
 
     private Rectangle expandRectBy(Rectangle rect, EdgeSizes edge) {
         Rectangle res = new Rectangle();
-        res.x = rect.x + edge.getLeft();
-        res.y = rect.y + edge.getTop();
-        res.width = rect.width + edge.getLeft() + edge.getRight();
-        res.height = rect.height + edge.getTop() + edge.getBottom();
+        res.setX( rect.x() + edge.getLeft());
+        res.setY( rect.y() + edge.getTop());
+        res.setWidth( rect.width() + edge.getLeft() + edge.getRight());
+        res.setHeight( rect.height() + edge.getTop() + edge.getBottom());
         return res;
     }
 

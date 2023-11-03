@@ -1,6 +1,7 @@
 package org.example.browser;
 
-import com.badlogic.gdx.math.Rectangle;
+
+import io.github.humbleui.types.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +52,10 @@ public class Paint {
 
         //Left border
         Rectangle rect = new Rectangle();
-        rect.x = border_box.x;
-        rect.y = border_box.y;
-        rect.width = d.getBorder().getLeft();
-        rect.height = border_box.height;
+        rect.setX(border_box.x());
+        rect.setY(border_box.y());
+        rect.setWidth( d.getBorder().getLeft());
+        rect.setHeight( border_box.height());
         SolidColor sc = new SolidColor();
         sc.setRect(rect);
         sc.setColor(color);
@@ -63,30 +64,30 @@ public class Paint {
 
         //Right border
         rect = new Rectangle();
-        rect.x = border_box.x + border_box.width - d.getBorder().getRight();
-        rect.y = border_box.y;
-        rect.width = d.getBorder().getRight();
-        rect.height = border_box.height;
+        rect.setX( border_box.x() + border_box.width() - d.getBorder().getRight());
+        rect.setY( border_box.y());
+        rect.setWidth( d.getBorder().getRight());
+        rect.setHeight( border_box.height());
         sc = new SolidColor();
         sc.setRect(rect);
         sc.setColor(color);
 
         //Top border
         rect = new Rectangle();
-        rect.x = border_box.x;
-        rect.y = border_box.y;
-        rect.width = border_box.width;
-        rect.height = d.getBorder().getTop();
+        rect.setX( border_box.x());
+        rect.setY(border_box.y());
+        rect.setWidth( border_box.width());
+        rect.setHeight( d.getBorder().getTop());
         sc = new SolidColor();
         sc.setRect(rect);
         sc.setColor(color);
 
         //Bottom border
         rect = new Rectangle();
-        rect.x = border_box.x;
-        rect.y = border_box.y + border_box.height - d.getBorder().getBottom();
-        rect.width = border_box.width;
-        rect.height = d.getBorder().getBottom();
+        rect.setX(border_box.x());
+        rect.setY( border_box.y() + border_box.height() - d.getBorder().getBottom());
+        rect.setWidth( border_box.width());
+        rect.setHeight( d.getBorder().getBottom());
         sc = new SolidColor();
         sc.setRect(rect);
         sc.setColor(color);
