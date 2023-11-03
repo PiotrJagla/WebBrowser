@@ -10,9 +10,16 @@ public class HTMLParser {
     private String input;
     private int pos;
 
+    private String styleContent;
+
     public HTMLParser(String input) {
+        styleContent = "";
         this.input = input;
         pos = 0;
+    }
+
+    public String getStyleContent() {
+        return styleContent;
     }
 
     public Node parse() {
@@ -48,6 +55,12 @@ public class HTMLParser {
     private Node parseElement() {
         consume();
         String tagName = parseTagName();
+        if(tagName.equals("style")) {
+            consume();
+            styleContent += consumeUntil(c -> c != '<');
+            consumeUntil(c -> c != '>');
+            consume();
+        }
         Map<String, String> attrs = parseAttrs();
         consume();
 

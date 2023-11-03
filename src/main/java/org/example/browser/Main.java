@@ -75,7 +75,7 @@ public class Main {
         Node root = htmlParser.parse();
 
 //        CSSParser
-        String CSSInput = "";
+        String CSSInput = htmlParser.getStyleContent();
         try {
             BufferedReader br = new BufferedReader(new FileReader("style.css"));
             String line;
