@@ -1,12 +1,10 @@
 package org.example.browser;
 
 
-import io.github.humbleui.types.Rect;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class Paint {
+public class RenderingPaint {
 
     public List<DisplayCommand> buildDisplayList(LayoutBox layoutRoot) {
         List<DisplayCommand> list = new ArrayList<>();
