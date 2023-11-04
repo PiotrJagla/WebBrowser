@@ -1,5 +1,8 @@
-package org.example.browser;
+package org.example.browser.CSS;
 
+
+import org.example.browser.CSS.CSSSelector;
+import org.example.browser.CSS.Declaration;
 
 import java.util.List;
 

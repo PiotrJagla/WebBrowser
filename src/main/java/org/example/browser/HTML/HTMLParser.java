@@ -1,4 +1,8 @@
-package org.example.browser;
+package org.example.browser.HTML;
+
+import org.example.browser.HTML.ElementNode;
+import org.example.browser.HTML.Node;
+import org.example.browser.HTML.TextNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;

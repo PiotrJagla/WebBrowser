@@ -1,55 +1,17 @@
-package org.example.browser;
+package org.example.browser.Layout;
 
+
+import org.example.browser.CSS.Values.Keyword;
+import org.example.browser.CSS.Values.Length;
+import org.example.browser.CSS.Values.Value;
+import org.example.browser.Style.StyledNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.browser.Unit.Px;
+import static org.example.browser.CSS.Values.Unit.Px;
 
-
-public class Layout {
-
-    public LayoutBox layoutTree(StyledNode root, Dimensions containingBlock) {
-        containingBlock.getContent().setHeight(  0.0f);
-        LayoutBox layoutRoot = buildLayoutTree(root);
-        layoutRoot.layout(containingBlock);
-        return layoutRoot;
-    }
-    private LayoutBox buildLayoutTree(StyledNode styledNode) {
-        LayoutBox root = new LayoutBox();
-        BoxType boxType = new BoxType();
-        switch(styledNode.getDisplay()) {
-            case Block:
-                boxType.setBoxTypeName(BoxTypeName.BlockNode);
-                boxType.setStyledNode(styledNode);
-                root.setBoxType(boxType);
-                break;
-            case Inline:
-                boxType.setBoxTypeName(BoxTypeName.InlineNode);
-                boxType.setStyledNode(styledNode);
-                root.setBoxType(boxType);
-                break;
-        }
-
-        for (StyledNode child : styledNode.getChildren()) {
-            switch(child.getDisplay()) {
-                case Block:
-                    root.getChildren().add(buildLayoutTree(child));
-                    break;
-                case Inline:
-                    root.getInlineContainer().getChildren().add(buildLayoutTree(child));
-                    break;
-                case None:
-                    break;
-            }
-        }
-
-        return root;
-    }
-
-}
-
-class LayoutBox {
+public class LayoutBox {
     private Dimensions dimensions = new Dimensions();
     private BoxType boxType = new BoxType();
     private List<LayoutBox> children = new ArrayList<>();
@@ -60,6 +22,8 @@ class LayoutBox {
                 layoutBlock(containingBlock);
                 break;
             case InlineNode:
+                System.out.println("There is inline node");
+                //TODO: implement inline display
                 break;
             case AnonymusBlock:
                 break;
@@ -269,181 +233,5 @@ class LayoutBox {
 
     public void setChildren(List<LayoutBox> children) {
         this.children = children;
-    }
-}
-
-enum Display{
-    Inline,
-    Block,
-    None
-}
-
-class BoxType{
-    private BoxTypeName boxTypeName =BoxTypeName.BlockNode;
-    private StyledNode styledNode;
-
-    public BoxTypeName getBoxTypeName() {
-        return boxTypeName;
-    }
-
-    public void setBoxTypeName(BoxTypeName boxTypeName) {
-        this.boxTypeName = boxTypeName;
-    }
-
-    public StyledNode getStyledNode() {
-        return styledNode;
-    }
-
-    public void setStyledNode(StyledNode styledNode) {
-        this.styledNode = styledNode;
-    }
-}
-
-enum BoxTypeName{
-    BlockNode,
-    InlineNode,
-    AnonymusBlock,
-}
-
-
-class Rectangle{
-    private float x;
-    private float y;
-    private float width;
-    private float height;
-
-    public float x() {
-        return x;
-    }
-
-    public Rectangle setX(float x) {
-        this.x = x;
-        return this;
-    }
-
-    public float y() {
-        return y;
-    }
-
-    public Rectangle setY(float y) {
-        this.y = y;
-        return this;
-    }
-
-    public float width() {
-        return width;
-    }
-
-    public Rectangle setWidth(float width) {
-        this.width = width;
-        return this;
-    }
-
-    public float height() {
-        return height;
-    }
-
-    public Rectangle setHeight(float height) {
-        this.height = height;
-        return this;
-    }
-}
-
-
-class Dimensions{
-    private Rectangle content = new Rectangle();
-    private EdgeSizes padding = new EdgeSizes();
-    private EdgeSizes border = new EdgeSizes();
-    private EdgeSizes margin = new EdgeSizes();
-
-
-    public Rectangle paddingBox() {
-        return expandRectBy(content, padding);
-    }
-    public Rectangle borderBox() {
-        return expandRectBy(paddingBox(), border);
-    }
-    public Rectangle marginBox() {
-        return expandRectBy(borderBox(), margin);
-    }
-
-    private Rectangle expandRectBy(Rectangle rect, EdgeSizes edge) {
-        Rectangle res = new Rectangle();
-        res.setX( rect.x() + edge.getLeft());
-        res.setY( rect.y() + edge.getTop());
-        res.setWidth( rect.width() + edge.getLeft() + edge.getRight());
-        res.setHeight( rect.height() + edge.getTop() + edge.getBottom());
-        return res;
-    }
-
-    public Rectangle getContent() {
-        return content;
-    }
-
-    public void setContent(Rectangle content) {
-        this.content = content;
-    }
-
-    public EdgeSizes getPadding() {
-        return padding;
-    }
-
-    public void setPadding(EdgeSizes padding) {
-        this.padding = padding;
-    }
-
-    public EdgeSizes getBorder() {
-        return border;
-    }
-
-    public void setBorder(EdgeSizes border) {
-        this.border = border;
-    }
-
-    public EdgeSizes getMargin() {
-        return margin;
-    }
-
-    public void setMargin(EdgeSizes margin) {
-        this.margin = margin;
-    }
-}
-
-class EdgeSizes {
-    private float left = 0.0f;
-    private float right= 0.0f;
-    private float top= 0.0f;
-    private float bottom= 0.0f;
-
-    public float getLeft() {
-        return left;
-    }
-
-    public void setLeft(float left) {
-        this.left = left;
-    }
-
-    public float getRight() {
-        return right;
-    }
-
-    public void setRight(float right) {
-        this.right = right;
-    }
-
-    public float getTop() {
-        return top;
-    }
-
-    public void setTop(float top) {
-        this.top = top;
-    }
-
-    public float getBottom() {
-        return bottom;
-    }
-
-    public void setBottom(float bottom) {
-        this.bottom = bottom;
     }
 }

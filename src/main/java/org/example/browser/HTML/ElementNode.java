@@ -1,11 +1,10 @@
-package org.example.browser;
+package org.example.browser.HTML;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class Node {
-}
-class ElementNode extends Node{
+public class ElementNode extends Node{
 
     private String tagName = "";
 
@@ -60,18 +59,3 @@ class ElementNode extends Node{
     }
 }
 
-class TextNode extends Node{
-    private String text;
-
-    public TextNode(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-}

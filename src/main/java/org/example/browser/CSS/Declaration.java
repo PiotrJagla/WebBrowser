@@ -1,4 +1,6 @@
-package org.example.browser;
+package org.example.browser.CSS;
+
+import org.example.browser.CSS.Values.Value;
 
 public class Declaration {
     private String name;

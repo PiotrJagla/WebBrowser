@@ -1,5 +1,7 @@
-package org.example.browser;
+package org.example.browser.CSS;
 
+
+import org.example.browser.CSS.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
