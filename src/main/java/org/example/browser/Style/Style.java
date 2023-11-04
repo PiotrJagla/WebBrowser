@@ -15,7 +15,6 @@ public class Style {
         StyledNode styledNode = new StyledNode();
         styledNode.setNode(root);
         if(root instanceof TextNode) {
-            styledNode.setSpecifiedValues(new PropertyMap());
         } else if (root instanceof ElementNode) {
             styledNode.setSpecifiedValues(specifiedValues((ElementNode) root, stylesheet));
             for (Node child : ((ElementNode) root).getChildren()) {
@@ -64,7 +63,7 @@ public class Style {
         return stylesheet.getRules().stream().map(r -> matchRule(elem,r)).filter(mr -> mr != null).collect(Collectors.toList());
     }
 
-    private PropertyMap specifiedValues(ElementNode elem, Stylesheet stylesheet) {
+    private HashMap<String, Value> specifiedValues(ElementNode elem, Stylesheet stylesheet) {
         HashMap<String, Value> values = new HashMap<>();
         List<MatchedRule> rules = matchRules(elem,stylesheet);
 
@@ -89,9 +88,7 @@ public class Style {
             }
         }
 
-        PropertyMap pm = new PropertyMap();
-        pm.setMap(values);
-        return pm;
+        return values;
     }
 
 }

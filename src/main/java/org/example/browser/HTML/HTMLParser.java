@@ -59,16 +59,16 @@ public class HTMLParser {
     private Node parseElement() {
         consume();
         String tagName = parseTagName();
-        if(tagName.equals("style")) {
-            consume();
-            styleContent += consumeUntil(c -> c != '<');
-            consumeUntil(c -> c != '>');
-            consume();
-        }
         Map<String, String> attrs = parseAttrs();
         consume();
 
         List<Node> children = parseNodes();
+        if(tagName.equals("style")) {
+            if(!children.isEmpty()) {
+                TextNode tn = (TextNode) children.get(0);
+                styleContent += tn.getText();
+            }
+        }
         consume();
         consume();
         parseTagName();
@@ -130,8 +130,6 @@ public class HTMLParser {
 
     private void consumeWhitespace() {
         consumeUntil((character -> character == ' ' || character == '\n'));
-//        if(peek() == ' ' ||)
-
     }
 
     private String consumeUntil(Predicate<Character> test) {

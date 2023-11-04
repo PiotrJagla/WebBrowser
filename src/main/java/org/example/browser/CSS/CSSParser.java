@@ -1,6 +1,6 @@
 package org.example.browser.CSS;
 
-import org.example.browser.CSS.Values.Value;
+import org.example.browser.CSS.Values.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

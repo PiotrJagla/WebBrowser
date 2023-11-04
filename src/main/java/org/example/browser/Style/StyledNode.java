@@ -7,11 +7,12 @@ import org.example.browser.CSS.Values.Value;
 import org.example.browser.Layout.Display;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class StyledNode {
     private Node node;
-    private PropertyMap specifiedValues = new PropertyMap();
+    private HashMap<String,Value> specifiedValues = new HashMap<>();
     private List<StyledNode> children = new ArrayList<>();
 
     public Node getNode() {
@@ -22,11 +23,11 @@ public class StyledNode {
         this.node = node;
     }
 
-    public PropertyMap getSpecifiedValues() {
+    public HashMap<String,Value> getSpecifiedValues() {
         return specifiedValues;
     }
 
-    public void setSpecifiedValues(PropertyMap specifiedValues) {
+    public void setSpecifiedValues(HashMap<String,Value> specifiedValues) {
         this.specifiedValues = specifiedValues;
     }
 
@@ -39,7 +40,19 @@ public class StyledNode {
     }
 
     public Value value(String str) {
-        return specifiedValues.getMap().getOrDefault(str,null);
+        return specifiedValues.getOrDefault(str,null);
+    }
+
+    public Value lookup(Value defaultValue, String... lookups) {
+        Value result;
+        for (int i = 0; i < lookups.length; i++) {
+            result = specifiedValues.getOrDefault(lookups[i],null);
+            if(result != null) {
+                return result;
+            }
+
+        }
+        return defaultValue;
     }
 
     public Display getDisplay() {

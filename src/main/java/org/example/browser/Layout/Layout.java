@@ -1,16 +1,7 @@
 package org.example.browser.Layout;
 
 
-import org.example.browser.CSS.Values.Keyword;
-import org.example.browser.CSS.Values.Length;
-import org.example.browser.CSS.Values.Value;
 import org.example.browser.Style.StyledNode;
-import org.example.browser.Layout.Display;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.example.browser.CSS.Values.Unit.Px;
 
 
 public class Layout {
@@ -23,17 +14,12 @@ public class Layout {
     }
     private LayoutBox buildLayoutTree(StyledNode styledNode) {
         LayoutBox root = new LayoutBox();
-        BoxType boxType = new BoxType();
         switch(styledNode.getDisplay()) {
             case Block:
-                boxType.setBoxTypeName(BoxTypeName.BlockNode);
-                boxType.setStyledNode(styledNode);
-                root.setBoxType(boxType);
+                root.setBox(new Box(BoxType.BlockNode, styledNode));
                 break;
             case Inline:
-                boxType.setBoxTypeName(BoxTypeName.InlineNode);
-                boxType.setStyledNode(styledNode);
-                root.setBoxType(boxType);
+                root.setBox(new Box(BoxType.InlineNode, styledNode));
                 break;
         }
 

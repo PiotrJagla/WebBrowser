@@ -84,7 +84,7 @@ public class Main {
         } catch (Exception e) {
         }
         HTMLParser htmlParser = new HTMLParser(HTMLInput);
-        Node root = htmlParser.parse();
+        Node DOMRoot = htmlParser.parse();
 
 //        CSSParser
         String CSSInput = htmlParser.getStyleContent();
@@ -101,7 +101,7 @@ public class Main {
 
         //Styling DOM tree
         Style style = new Style();
-        StyledNode styledTreeRoot = style.styleTree(root,stylesheet);
+        StyledNode styledTreeRoot = style.styleTree(DOMRoot,stylesheet);
 
         //Layout
         Layout layout = new Layout();
@@ -140,6 +140,8 @@ public class Main {
             glfwPollEvents();
         }
     }
+
+
 }
 
 

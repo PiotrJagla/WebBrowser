@@ -40,4 +40,9 @@ public class CSSColor extends Value{
     public void setA(int a) {
         this.a = a;
     }
+
+    @Override
+    public float toPx() {
+        return 0.0f;
+    }
 }

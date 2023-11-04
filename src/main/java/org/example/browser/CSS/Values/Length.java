@@ -30,4 +30,9 @@ public class Length extends Value{
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+
+    @Override
+    public float toPx() {
+        return length;
+    }
 }

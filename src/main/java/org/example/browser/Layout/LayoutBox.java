@@ -13,11 +13,11 @@ import static org.example.browser.CSS.Values.Unit.Px;
 
 public class LayoutBox {
     private Dimensions dimensions = new Dimensions();
-    private BoxType boxType = new BoxType();
+    private Box box = new Box();
     private List<LayoutBox> children = new ArrayList<>();
 
     public void layout(Dimensions containingBlock) {
-        switch (boxType.getBoxTypeName()) {
+        switch (box.getBoxType()) {
             case BlockNode:
                 layoutBlock(containingBlock);
                 break;
@@ -38,7 +38,7 @@ public class LayoutBox {
     }
 
     private void calculateBlockWidth(Dimensions containingBlock) {
-        StyledNode sn = boxType.getStyledNode();
+        StyledNode sn = box.getStyledNode();
 
         Keyword auto = new Keyword();
         auto.setK("auto");
@@ -47,16 +47,16 @@ public class LayoutBox {
             widthValue = auto;
         }
 
-        Value marginLeft = lookup(sn, "margin-left", "margin", "", new Length());
-        Value marginRight = lookup(sn, "margin-right", "margin", "", new Length());
+        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
+        Value marginRight = sn.lookup(new Length(), "margin-right", "margin");
 
-        Value borderLeft = lookup(sn, "border-left-width", "border-width", "", new Length());
-        Value borderRight = lookup(sn, "border-right-width", "border-width", "", new Length());
+        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
+        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
 
-        Value paddingLeft = lookup(sn, "padding-left", "padding", "", new Length());
-        Value paddingRight = lookup(sn, "padding-right", "padding", "", new Length());
+        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
+        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
 
-        float total = toPx(marginLeft) + toPx(marginRight) + toPx(borderLeft) + toPx(borderRight) + toPx(paddingLeft) + toPx(paddingRight);
+        float total = (float)List.of(marginLeft, marginRight, borderLeft, borderRight, paddingLeft, paddingRight).stream().mapToDouble(e -> e.toPx()).sum();
 
 
         if(!(widthValue instanceof Keyword) && total > containingBlock.getContent().width()) {
@@ -73,7 +73,7 @@ public class LayoutBox {
         boolean isMarginLeftAuto = marginLeft instanceof Keyword;
         boolean isMarginRightAuto = marginRight instanceof Keyword;
         if(!isWidthAuto && !isMarginLeftAuto && !isMarginRightAuto) {
-            marginRight = new Length(toPx(marginRight) + underflow, Px);
+            marginRight = new Length(marginRight.toPx() + underflow, Px);
         }
         else if(!isWidthAuto && !isMarginLeftAuto && isMarginRightAuto) {
             marginRight = new Length(underflow, Px);
@@ -93,7 +93,7 @@ public class LayoutBox {
                 widthValue = new Length(underflow, Px);
             } else {
                 widthValue = new Length();
-                marginRight = new Length(toPx(marginRight) + underflow, Px);
+                marginRight = new Length(marginRight.toPx() + underflow, Px);
             }
 
         }
@@ -102,31 +102,31 @@ public class LayoutBox {
             marginRight = new Length(underflow/2.0f, Px);
         }
 
-        dimensions.getContent().setWidth( toPx(widthValue));
+        dimensions.getContent().setWidth( widthValue.toPx());
 
-        dimensions.getPadding().setLeft(toPx(paddingLeft));
-        dimensions.getPadding().setRight(toPx(paddingRight));
+        dimensions.getPadding().setLeft(paddingLeft.toPx());
+        dimensions.getPadding().setRight(paddingRight.toPx());
 
-        dimensions.getBorder().setLeft(toPx(borderLeft));
-        dimensions.getBorder().setRight(toPx(borderRight));
+        dimensions.getBorder().setLeft(borderLeft.toPx());
+        dimensions.getBorder().setRight(borderRight.toPx());
 
-        dimensions.getMargin().setLeft(toPx(marginLeft));
-        dimensions.getMargin().setRight(toPx(marginRight));
+        dimensions.getMargin().setLeft(marginLeft.toPx());
+        dimensions.getMargin().setRight(marginRight.toPx());
 
     }
 
     private void calculateBlockPosition(Dimensions containingBlock) {
-        StyledNode sn = getBoxType().getStyledNode();
+        StyledNode sn = getBox().getStyledNode();
 
 
-        dimensions.getMargin().setTop(toPx(lookup(sn, "margin-top", "margin", "", new Length())));
-        dimensions.getMargin().setBottom(toPx(lookup(sn, "margin-bottom", "margin", "", new Length())));
+        dimensions.getMargin().setTop(sn.lookup(new Length(),"margin-top", "margin").toPx());
+        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
 
-        dimensions.getBorder().setTop(toPx(lookup(sn, "border-top-width", "border-width", "", new Length())));
-        dimensions.getBorder().setBottom(toPx(lookup(sn, "border-bottom-width", "border-width", "", new Length())));
+        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
+        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
 
-        dimensions.getPadding().setTop(toPx(lookup(sn, "padding-top", "padding", "", new Length())));
-        dimensions.getPadding().setBottom(toPx(lookup(sn, "padding-bottom", "padding", "", new Length())));
+        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
+        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
 
         dimensions.getContent().setX( containingBlock.getContent().x() +
                 dimensions.getMargin().getLeft() +
@@ -147,8 +147,8 @@ public class LayoutBox {
     }
 
     private void calculateBlockHeight() {
-        if(getBoxType().getStyledNode().value("height") instanceof Length) {
-            Length h = (Length) getBoxType().getStyledNode().value("height");
+        if(getBox().getStyledNode().value("height") instanceof Length) {
+            Length h = (Length) getBox().getStyledNode().value("height");
             if(h.getUnit() == Px) {
                 dimensions.getContent().setHeight( h.getLength());
             }
@@ -157,51 +157,29 @@ public class LayoutBox {
 
     }
 
-    private Value lookup(StyledNode sn, String lookup1, String lookup2, String lookup3, Value defaultValue) {
-        Value res = sn.value(lookup1);
-        if(res == null) {
-            res = sn.value(lookup2);
-            if(res == null) {
-                res = sn.value(lookup3);
-                if(res == null) {
-                    res = defaultValue;
-                }
-            }
-        }
-        return res;
-    }
-
-    private float toPx(Value v) {
-        if(v instanceof Length) {
-            return ((Length) v).getLength();
-        }
-        else {
-            return 0.0f;
-        }
-    }
 
 
 
     public LayoutBox getInlineContainer() {
-        switch (boxType.getBoxTypeName()) {
+        switch (box.getBoxType()) {
             case InlineNode:
             case AnonymusBlock:
                 return this;
             case BlockNode:
                 if(children.isEmpty()) {
-                    BoxType bt = new BoxType();
-                    bt.setBoxTypeName(BoxTypeName.AnonymusBlock);
+                    Box bt = new Box();
+                    bt.setBoxType(BoxType.AnonymusBlock);
                     LayoutBox newBox = new LayoutBox();
-                    newBox.setBoxType(bt);
+                    newBox.setBox(bt);
                     children.add(newBox);
                 }
                 else {
                     LayoutBox lastChild = children.get(children.size() - 1);
-                    if(lastChild.getBoxType().getBoxTypeName() != BoxTypeName.AnonymusBlock) {
-                        BoxType bt = new BoxType();
-                        bt.setBoxTypeName(BoxTypeName.AnonymusBlock);
+                    if(lastChild.getBox().getBoxType() != BoxType.AnonymusBlock) {
+                        Box bt = new Box();
+                        bt.setBoxType(BoxType.AnonymusBlock);
                         LayoutBox newBox = new LayoutBox();
-                        newBox.setBoxType(bt);
+                        newBox.setBox(bt);
                         children.add(newBox);
                     }
                 }
@@ -219,12 +197,12 @@ public class LayoutBox {
         this.dimensions = dimensions;
     }
 
-    public BoxType getBoxType() {
-        return boxType;
+    public Box getBox() {
+        return box;
     }
 
-    public void setBoxType(BoxType boxType) {
-        this.boxType = boxType;
+    public void setBox(Box box) {
+        this.box = box;
     }
 
     public List<LayoutBox> getChildren() {

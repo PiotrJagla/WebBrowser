@@ -98,10 +98,10 @@ public class RenderingPaint {
     }
 
     private CSSColor getColor(LayoutBox layoutBox, String name) {
-        switch(layoutBox.getBoxType().getBoxTypeName()) {
+        switch(layoutBox.getBox().getBoxType()) {
             case BlockNode:
             case InlineNode:
-                Value v = layoutBox.getBoxType().getStyledNode().value(name);
+                Value v = layoutBox.getBox().getStyledNode().value(name);
                 if(v instanceof CSSColor) {
                     return (CSSColor) v;
                 }
