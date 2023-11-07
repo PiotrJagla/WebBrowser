@@ -16,9 +16,17 @@ public class LayoutBox {
     private Box box = new Box();
     private List<LayoutBox> children = new ArrayList<>();
 
+    public LayoutBox() {
+
+    }
+
+    public LayoutBox(Box box) {
+        this.box = box;
+    }
+
+
     public void layout(Dimensions containingBlock) {
 
-        traverse()
 
         switch (box.getBoxType()) {
             case BlockNode:
@@ -29,6 +37,7 @@ public class LayoutBox {
                 //TODO: implement inline display
                 break;
             case AnonymusBlock:
+                layoutBlock(containingBlock);
                 break;
         }
     }
@@ -147,13 +156,9 @@ public class LayoutBox {
 
     private void layoutBlockChildren() {
         for (LayoutBox child : getChildren()) {
-            if(child.getBox().getBoxType() == BoxType.InlineNode) {
-                int x = 0;
-            }
             child.layout(dimensions);
             dimensions.getContent().setHeight( dimensions.getContent().height() +  child.getDimensions().marginBox().height());
         }
-
     }
 
     private void calculateBlockHeight() {
@@ -163,11 +168,7 @@ public class LayoutBox {
                 dimensions.getContent().setHeight( h.getLength());
             }
         }
-
-
     }
-
-
 
 
     public LayoutBox getInlineContainer() {
@@ -177,16 +178,12 @@ public class LayoutBox {
                 return this;
             case BlockNode:
                 if(children.isEmpty()) {
-                    LayoutBox newBox = new LayoutBox();
-                    newBox.setBox(new Box(BoxType.AnonymusBlock, new StyledNode()));
-                    children.add(newBox);
+                    children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymusBlock)));
                 }
                 else {
                     LayoutBox lastChild = children.get(children.size() - 1);
                     if(lastChild.getBox().getBoxType() != BoxType.AnonymusBlock) {
-                        LayoutBox newBox = new LayoutBox();
-                        newBox.setBox(new Box(BoxType.AnonymusBlock, new StyledNode()));
-                        children.add(newBox);
+                        children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymusBlock)));
                     }
                 }
                 return children.get(children.size() - 1);

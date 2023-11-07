@@ -5,7 +5,7 @@ import org.example.browser.Style.StyledNode;
 
 public class Box {
     private BoxType boxType;
-    private StyledNode styledNode;
+    private StyledNode styledNode = new StyledNode();
 
     public Box(BoxType boxTypeName, StyledNode styledNode) {
         this.boxType = boxTypeName;
@@ -20,15 +20,17 @@ public class Box {
         return boxType;
     }
 
-    public void setBoxType(BoxType boxTypeName) {
-        this.boxType = boxTypeName;
+    public Box setBoxType(BoxType boxType) {
+        this.boxType = boxType;
+        return this;
     }
 
     public StyledNode getStyledNode() {
         return styledNode;
     }
 
-    public void setStyledNode(StyledNode styledNode) {
+    public Box setStyledNode(StyledNode styledNode) {
         this.styledNode = styledNode;
+        return this;
     }
 }
