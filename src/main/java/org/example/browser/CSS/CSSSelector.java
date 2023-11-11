@@ -12,11 +12,9 @@ public abstract class CSSSelector {
     }
 
     public CSSSelector(){
-
     }
 
     public abstract Specifity specifity();
-
 }
 
 
