@@ -34,7 +34,6 @@ public class LayoutBox {
                 break;
             case InlineNode:
                 layoutInline(containingBlock);
-                //TODO: implement inline display
                 break;
             case AnonymusBlock:
                 layoutBlock(containingBlock);
@@ -43,7 +42,14 @@ public class LayoutBox {
     }
 
     private void layoutInline(Dimensions containingBlock) {
+        calculateInlineHeight(containingBlock);
+        calculateBlockPosition(containingBlock);
+
         System.out.println("laying out inline");
+    }
+
+    private void calculateInlineHeight(Dimensions containingBlock) {
+
     }
 
     private void layoutBlock(Dimensions containingBlock) {

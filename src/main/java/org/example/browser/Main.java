@@ -1,5 +1,6 @@
 package org.example.browser;
 import io.github.humbleui.skija.*;
+import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.Paint;
 import io.github.humbleui.types.*;
 import org.example.browser.CSS.CSSParser;
@@ -16,12 +17,16 @@ import org.example.browser.Painting.RenderingPaint;
 import org.example.browser.Painting.SolidColor;
 import org.example.browser.Style.Style;
 import org.example.browser.Style.StyledNode;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.windows.MOUSEINPUT;
 
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.DoubleBuffer;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -121,6 +126,19 @@ public class Main {
         while (!glfwWindowShouldClose(windowHandle)) {
 
             // DRAW HERE!!!
+            DoubleBuffer xBuf= BufferUtils.createDoubleBuffer(2);
+            DoubleBuffer yBuf= BufferUtils.createDoubleBuffer(2);
+            glfwGetCursorPos(windowHandle, xBuf, yBuf);
+            double x = xBuf.get(0);
+            double y = yBuf.get(0);
+
+//            System.out.println("Mouse X pos: " + x);
+//            System.out.println("Mouse Y pos: " + y);
+            int state = glfwGetMouseButton(windowHandle, GLFW_MOUSE_BUTTON_RIGHT);
+            if(state == GLFW_PRESS) {
+                System.out.println("pressed");
+            }
+
             canvas.clear(0x00000000);
             for (DisplayCommand d : list) {
                 SolidColor sc = (SolidColor) d;
@@ -130,6 +148,11 @@ public class Main {
                 Color4f c4f = new Color4f(c.getR()/255.0f, c.getG()/255.0f, c.getB()/255.0f, c.getA()/255.0f);
                 rawPaint.setColor4f(c4f);
                 canvas.drawRect(new Rect(r.x(),r.y(),r.x()+r.width(),r.y()+r.height()), rawPaint);
+
+                if(x <= r.x() + r.width() && x >= r.x() && y >= r.y() && y <= r.y() + r.height()) {
+                    System.out.println("Collision");
+                }
+
 
             }
             surface.draw(canvas, 0,0,rawPaint);
