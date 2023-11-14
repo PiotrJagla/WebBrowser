@@ -29,14 +29,12 @@ public class LayoutBox {
 
 
         switch (box.getBoxType()) {
+            case AnonymusBlock:
             case BlockNode:
                 layoutBlock(containingBlock);
                 break;
             case InlineNode:
                 layoutInline(containingBlock);
-                break;
-            case AnonymusBlock:
-                layoutBlock(containingBlock);
                 break;
         }
     }

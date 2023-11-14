@@ -33,8 +33,14 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
+interface MyInter {
+    String getStr();
+}
+
 public class Main {
     public static void main(String[] args) {
+
+        MyInter iii = () -> "SDF";
         var width = 800;
         var height = 600;
 
