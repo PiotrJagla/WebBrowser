@@ -27,20 +27,41 @@ import org.lwjgl.system.windows.MOUSEINPUT;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.nio.DoubleBuffer;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
-interface MyInter {
-    String getStr();
+class A{
+
+}
+
+class B extends A{
+
+}
+
+class S<V extends A> {
+
+}
+
+class C{
+
 }
 
 public class Main {
-    public static void main(String[] args) {
 
-        MyInter iii = () -> "SDF";
+    public static void foo(List<?> aa) {
+        System.out.println();
+    }
+    public static void main(String[] args) {
+        List<Integer> boo = new ArrayList<>();
+        foo(boo);
+        S<B> sass = new S<>();
+        //S<C> sas = new S<>(); this dont work
+
+
         var width = 800;
         var height = 600;
 
@@ -82,6 +103,12 @@ public class Main {
                 ColorSpace.getSRGB());
 
 // do not .close() — Surface manages its lifetime here
+
+        Integer[] sdfs = new Integer[]{};
+        List<Integer> sdfsdf = Arrays.stream(sdfs).collect(Collectors.toList());
+
+        Integer[] ccccc = sdfsdf.toArray(Integer[]::new);
+
 
 
         //HTML htmlParser
