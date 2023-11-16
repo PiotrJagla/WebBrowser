@@ -4,6 +4,7 @@ package org.example.browser.Layout;
 import org.example.browser.CSS.Values.Keyword;
 import org.example.browser.CSS.Values.Length;
 import org.example.browser.CSS.Values.Value;
+import org.example.browser.HTML.TextNode;
 import org.example.browser.Style.StyledNode;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import static org.example.browser.CSS.Values.Unit.Px;
 public class LayoutBox {
     private Dimensions dimensions = new Dimensions();
     private Box box = new Box();
+    private LayoutBox parentBox;
     private List<LayoutBox> children = new ArrayList<>();
 
     public LayoutBox() {
@@ -29,19 +31,20 @@ public class LayoutBox {
 
 
         switch (box.getBoxType()) {
-            case AnonymusBlock:
+            case AnonymousBlockNode:
             case BlockNode:
                 layoutBlock(containingBlock);
                 break;
             case InlineNode:
+            case AnonymousInlineNode:
                 layoutInline(containingBlock);
                 break;
         }
     }
 
     private void layoutInline(Dimensions containingBlock) {
-        calculateInlineHeight(containingBlock);
-        calculateBlockPosition(containingBlock);
+//        calculateInlineHeight(containingBlock);
+//        calculateBlockPosition(containingBlock);
 
         System.out.println("laying out inline");
     }
@@ -175,25 +178,50 @@ public class LayoutBox {
     }
 
 
-    public LayoutBox getInlineContainer() {
+    public LayoutBox getInlineContainer(List<StyledNode> siblings, StyledNode child) {
+        if(!siblings.stream().anyMatch(n -> n.getDisplay().equals(Display.Block))) {
+            return this;
+        }
+        if(child.getNode() instanceof TextNode) {
+            LayoutBox anonInlineBox = new LayoutBox();
+            anonInlineBox.setBox(new Box(BoxType.AnonymousInlineNode, child));
+            anonInlineBox.setParentBox(this);
+            return anonInlineBox;
+        }
         switch (box.getBoxType()) {
             case InlineNode:
-            case AnonymusBlock:
+            case AnonymousBlockNode:
+            case AnonymousInlineNode:
                 return this;
             case BlockNode:
                 if(children.isEmpty()) {
-                    children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymusBlock)));
+                    children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymousBlockNode)));
                 }
                 else {
                     LayoutBox lastChild = children.get(children.size() - 1);
-                    if(lastChild.getBox().getBoxType() != BoxType.AnonymusBlock) {
-                        children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymusBlock)));
+                    if(lastChild.getBox().getBoxType() != BoxType.AnonymousBlockNode) {
+                        children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymousBlockNode)));
                     }
                 }
+                children.get(children.size() - 1).setParentBox(this);
                 return children.get(children.size() - 1);
             default:
                 return null;
         }
+    }
+
+    public LayoutBox getParentBox() {
+        return parentBox;
+    }
+
+    public LayoutBox setParentBox(LayoutBox parentBox) {
+        this.parentBox = parentBox;
+        return this;
+    }
+
+    public LayoutBox setChildren(List<LayoutBox> children) {
+        this.children = children;
+        return this;
     }
 
     public Dimensions getDimensions() {
@@ -215,8 +243,9 @@ public class LayoutBox {
     public List<LayoutBox> getChildren() {
         return children;
     }
-
-    public void setChildren(List<LayoutBox> children) {
-        this.children = children;
+    public void addChild(LayoutBox child) {
+        child.setParentBox(this);
+        children.add(child);
     }
+
 }

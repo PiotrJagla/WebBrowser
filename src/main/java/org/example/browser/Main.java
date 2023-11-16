@@ -34,33 +34,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
-class A{
-
-}
-
-class B extends A{
-
-}
-
-class S<V extends A> {
-
-}
-
-class C{
-
-}
 
 public class Main {
 
-    public static void foo(List<?> aa) {
-        System.out.println();
-    }
     public static void main(String[] args) {
-        List<Integer> boo = new ArrayList<>();
-        foo(boo);
-        S<B> sass = new S<>();
-        //S<C> sas = new S<>(); this dont work
-
 
         var width = 800;
         var height = 600;

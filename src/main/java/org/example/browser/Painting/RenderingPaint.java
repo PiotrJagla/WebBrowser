@@ -108,8 +108,6 @@ public class RenderingPaint {
                 else {
                     return null;
                 }
-            case AnonymusBlock:
-                return null;
             default:
                 return null;
         }

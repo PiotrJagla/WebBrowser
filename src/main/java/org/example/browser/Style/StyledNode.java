@@ -4,7 +4,9 @@ package org.example.browser.Style;
 import org.example.browser.CSS.Values.Keyword;
 import org.example.browser.HTML.Node;
 import org.example.browser.CSS.Values.Value;
+import org.example.browser.HTML.TextNode;
 import org.example.browser.Layout.Display;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +58,9 @@ public class StyledNode {
     }
 
     public Display getDisplay() {
+        if(node instanceof TextNode)  {
+            return Display.Inline;
+        }
         if(!(value("display") instanceof Keyword)) {
             return Display.Block;
         }
