@@ -3,26 +3,43 @@
     <head>
         <title>test page</title>
         <style>
-            p{
+            *{
+                padding:20px;
+            }
+            .p{
+                background-color:green;
                 display: inline;
             }
-            span{
-                display: block;
+            .b{
+                display: inline;
+                background-color:yellow;
             }
             .a{
-                display: inline;
+                background-color:black;
+                display: block;
+            }
+            .h{
+                background-color:blue;
+                display: block;
+            }
+            .n{
+                background-color:orange;
+                display: block;
             }
         </style>
     </head>
     <body>
-        <p>
-            This is before
-            <span>this is span</span>
-            this is after
+        <div class="n">
             <div class="a">
-                  <div class="a">inline div</div>
-                  <div class="a">inline second div</div>
+                <div class="p">
+                </div>
+                <div class="b">
+                    <div class="n">
+                    </div>
+                    <div class="h">
+                    </div>
+                </div>
             </div>
-        </p>
+        </div>
     </body>
 </html>

@@ -20,8 +20,8 @@ public class Dimensions{
 
     private Rectangle expandRectBy(Rectangle rect, EdgeSizes edge) {
         Rectangle res = new Rectangle();
-        res.setX( rect.x() + edge.getLeft());
-        res.setY( rect.y() + edge.getTop());
+        res.setX( rect.x() - edge.getLeft());
+        res.setY( rect.y() - edge.getTop());
         res.setWidth( rect.width() + edge.getLeft() + edge.getRight());
         res.setHeight( rect.height() + edge.getTop() + edge.getBottom());
         return res;

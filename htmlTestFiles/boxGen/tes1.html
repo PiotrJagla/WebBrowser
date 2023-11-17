@@ -3,9 +3,37 @@
     <head>
         <title>test page</title>
         <style>
+            *{
+            }
+
+            .a{ 
+                margin: 10px;
+                background-color: green;
+            }
+            .b{
+                display:inline;
+            }
+
         </style>
     </head>
     <body>
-        <p>Some <em> emphasized</em> text<p>
+        <div class="a">
+            <div class="b">
+                inline
+            </div>
+            <div class="b">
+                inline
+            </div>
+            <div>
+                this is not inline
+            </div>
+            <div class="b">
+                inline
+            </div>
+            <div class="b">
+                inline
+            </div>
+        </div>
+
     </body>
 </html>

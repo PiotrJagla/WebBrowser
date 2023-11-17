@@ -33,27 +33,154 @@ public class LayoutBox {
         switch (box.getBoxType()) {
             case AnonymousBlockNode:
             case BlockNode:
-                layoutBlock(containingBlock);
+                if(isLineBox()) {
+                    layoutBlock_InlineContext(containingBlock);
+                }
+                else{
+                    layoutBlock_BlockContext(containingBlock);
+                }
                 break;
             case InlineNode:
             case AnonymousInlineNode:
-                layoutInline(containingBlock);
+                if(isLineBox()) {
+                    layoutInline_InlineContext(containingBlock);
+                }
+                else {
+                    layoutInline_BlockContext(containingBlock);
+                }
                 break;
         }
     }
 
-    private void layoutInline(Dimensions containingBlock) {
-//        calculateInlineHeight(containingBlock);
-//        calculateBlockPosition(containingBlock);
+    private void layoutInline_BlockContext(Dimensions containingBlock) {
+        StyledNode sn = box.getStyledNode();
 
-        System.out.println("laying out inline");
+        //calculate width
+        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
+        Value marginRight= sn.lookup(new Length(), "margin-right", "margin");
+
+        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
+        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
+
+        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
+        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
+
+        dimensions.getPadding().setLeft(paddingLeft.toPx());
+        dimensions.getPadding().setRight(paddingRight.toPx());
+
+        dimensions.getMargin().setLeft(marginLeft.toPx());
+        dimensions.getMargin().setRight(marginRight.toPx());
+
+        dimensions.getBorder().setLeft(borderLeft.toPx());
+        dimensions.getBorder().setRight(borderRight.toPx());
+
+
+        float total = (float) List.of(marginLeft, marginRight, paddingLeft, paddingRight, borderRight, borderLeft).stream().mapToDouble(e -> e.toPx()).sum();
+
+        dimensions.getContent().setWidth(total);
+
+        //calculate position
+
+        dimensions.getMargin().setTop(sn.lookup(new Length(), "margin-top", "margin").toPx());
+        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
+
+        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
+        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
+
+        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
+        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
+
+        dimensions.getContent().setX(
+                dimensions.getMargin().getLeft() + dimensions.getPadding().getLeft() + dimensions.getBorder().getLeft()
+                        + containingBlock.getContent().width() + containingBlock.getContent().x()
+        );
+        dimensions.getContent().setY(
+                dimensions.getMargin().getTop() + dimensions.getBorder().getTop()
+                    + containingBlock.getContent().y()
+        );
+
+        //layout children
+        for (LayoutBox child : children) {
+            child.layout(dimensions);
+            dimensions.getContent().setHeight(dimensions.getContent().height() + child.getDimensions().marginBox().height());
+        }
+
     }
 
-    private void calculateInlineHeight(Dimensions containingBlock) {
+    private void layoutInline_InlineContext(Dimensions containingBlock) {
 
     }
 
-    private void layoutBlock(Dimensions containingBlock) {
+
+    private boolean isLineBox() {
+        if(children.isEmpty()) {
+            return false;
+        }
+        return !children.stream().
+                anyMatch(c -> c.getBox().getBoxType().equals(BoxType.BlockNode) ||
+                        c.getBox().getBoxType().equals(BoxType.AnonymousBlockNode)
+                );
+    }
+
+    private void layoutBlock_InlineContext(Dimensions containingBlock) {
+        StyledNode sn = box.getStyledNode();
+
+        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
+        Value marginRight = sn.lookup(new Length(), "margin-right", "margin");
+
+        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
+        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
+
+        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
+        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
+
+        dimensions.getPadding().setLeft(paddingLeft.toPx());
+        dimensions.getPadding().setRight(paddingRight.toPx());
+
+        dimensions.getMargin().setLeft(marginLeft.toPx());
+        dimensions.getMargin().setRight(marginRight.toPx());
+
+        dimensions.getBorder().setLeft(borderLeft.toPx());
+        dimensions.getBorder().setRight(borderRight.toPx());
+
+        //calculate position
+        dimensions.getMargin().setTop(sn.lookup(new Length(),"margin-top", "margin").toPx());
+        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
+
+        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
+        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
+
+        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
+        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
+
+        dimensions.getContent().setX(
+                dimensions.getMargin().getLeft() + dimensions.getBorder().getLeft() + dimensions.getPadding().getLeft()
+                + containingBlock.getContent().x()
+        );
+
+        dimensions.getContent().setY(
+                dimensions.getMargin().getTop() + dimensions.getBorder().getTop() + dimensions.getPadding().getTop()
+                        + containingBlock.getContent().y() + containingBlock.getContent().height()
+        );
+
+        //layout children
+        for (LayoutBox child : children) {
+            child.layout(dimensions);
+            dimensions.getContent().setWidth(dimensions.getContent().width() + child.getDimensions().marginBox().width());
+        }
+        double minY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).min().getAsDouble();
+        double maxY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).max().getAsDouble();
+        dimensions.getContent().setHeight((float) (maxY - minY));
+
+        //calculate inline width
+
+        float total = (float)List.of(marginLeft, marginRight, borderLeft, borderRight, paddingLeft, paddingRight).stream().mapToDouble(e -> e.toPx()).sum();
+        dimensions.getContent().setWidth(containingBlock.getContent().width() - total);
+
+
+    }
+
+    private void layoutBlock_BlockContext(Dimensions containingBlock) {
         calculateBlockWidth(containingBlock);
         calculateBlockPosition(containingBlock);
         layoutBlockChildren();
@@ -180,13 +307,14 @@ public class LayoutBox {
 
     public LayoutBox getInlineContainer(List<StyledNode> siblings, StyledNode child) {
         if(!siblings.stream().anyMatch(n -> n.getDisplay().equals(Display.Block))) {
+            if(child.getNode() instanceof TextNode) {
+                LayoutBox anonInlineBox = new LayoutBox();
+                anonInlineBox.setBox(new Box(BoxType.AnonymousInlineNode, child));
+                anonInlineBox.setParentBox(this);
+                children.add(anonInlineBox);
+                return anonInlineBox;
+            }
             return this;
-        }
-        if(child.getNode() instanceof TextNode) {
-            LayoutBox anonInlineBox = new LayoutBox();
-            anonInlineBox.setBox(new Box(BoxType.AnonymousInlineNode, child));
-            anonInlineBox.setParentBox(this);
-            return anonInlineBox;
         }
         switch (box.getBoxType()) {
             case InlineNode:
@@ -219,17 +347,9 @@ public class LayoutBox {
         return this;
     }
 
-    public LayoutBox setChildren(List<LayoutBox> children) {
-        this.children = children;
-        return this;
-    }
 
     public Dimensions getDimensions() {
         return dimensions;
-    }
-
-    public void setDimensions(Dimensions dimensions) {
-        this.dimensions = dimensions;
     }
 
     public Box getBox() {
