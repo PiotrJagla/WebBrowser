@@ -122,7 +122,9 @@ public class Main {
         Layout layout = new Layout();
         Dimensions viewport = new Dimensions();
         viewport.getContent().setWidth( 700);
-        viewport.getContent().setHeight( 600);
+        viewport.getContent().setHeight( 500);
+        viewport.getContent().setX(40);
+        viewport.getContent().setY(40);
         LayoutBox layoutRoot = layout.layoutTree(styledTreeRoot, viewport);
 
         //Paint
@@ -135,7 +137,10 @@ public class Main {
 // Render loop
         while (!glfwWindowShouldClose(windowHandle)) {
 
+
+
             // DRAW HERE!!!
+
             DoubleBuffer xBuf= BufferUtils.createDoubleBuffer(2);
             DoubleBuffer yBuf= BufferUtils.createDoubleBuffer(2);
             glfwGetCursorPos(windowHandle, xBuf, yBuf);
@@ -150,6 +155,8 @@ public class Main {
             }
 
             canvas.clear(0x00000000);
+            rawPaint.setColor4f(new Color4f(255, 255, 255, 155));
+            canvas.drawRect(new Rect(40,40, 40+700, 40+500), rawPaint);
             for (DisplayCommand d : list) {
                 SolidColor sc = (SolidColor) d;
                 Rectangle r = sc.getRect();
@@ -165,6 +172,9 @@ public class Main {
 
 
             }
+            rawPaint.setColor4f(new Color4f(0,255,255,255));
+            canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
+            canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             surface.draw(canvas, 0,0,rawPaint);
 
 

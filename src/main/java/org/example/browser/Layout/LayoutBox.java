@@ -76,8 +76,7 @@ public class LayoutBox {
 
 
         float total = (float) List.of(marginLeft, marginRight, paddingLeft, paddingRight, borderRight, borderLeft).stream().mapToDouble(e -> e.toPx()).sum();
-
-        dimensions.getContent().setWidth(total);
+        System.out.println(total);
 
         //calculate position
 
@@ -169,7 +168,7 @@ public class LayoutBox {
             dimensions.getContent().setWidth(dimensions.getContent().width() + child.getDimensions().marginBox().width());
         }
         double minY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).min().getAsDouble();
-        double maxY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).max().getAsDouble();
+        double maxY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y() + c.getDimensions().getContent().height()).max().getAsDouble();
         dimensions.getContent().setHeight((float) (maxY - minY));
 
         //calculate inline width

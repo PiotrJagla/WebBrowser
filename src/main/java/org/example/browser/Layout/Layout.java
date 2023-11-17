@@ -35,11 +35,6 @@ public class Layout {
         for (StyledNode child : styledNode.getChildren()) {
             switch(child.getDisplay()) {
                 case Block:
-                    //Wrapping node around anonymous block
-//                    LayoutBox anonBox = new LayoutBox();
-//                    anonBox.setBox(new Box(BoxType.AnonymousNode, child));
-//                    anonBox.setParentBox(node);
-//                    anonBox.addChild(buildLayoutTree(child));
                     node.addChild(buildLayoutTree(child));
                     break;
                 case Inline:
