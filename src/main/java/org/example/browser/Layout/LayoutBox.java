@@ -75,9 +75,6 @@ public class LayoutBox {
         dimensions.getBorder().setRight(borderRight.toPx());
 
 
-        float total = (float) List.of(marginLeft, marginRight, paddingLeft, paddingRight, borderRight, borderLeft).stream().mapToDouble(e -> e.toPx()).sum();
-        System.out.println(total);
-
         //calculate position
 
         dimensions.getMargin().setTop(sn.lookup(new Length(), "margin-top", "margin").toPx());
@@ -107,6 +104,56 @@ public class LayoutBox {
     }
 
     private void layoutInline_InlineContext(Dimensions containingBlock) {
+        StyledNode sn = box.getStyledNode();
+
+        //calculate width
+        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
+        Value marginRight= sn.lookup(new Length(), "margin-right", "margin");
+
+        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
+        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
+
+        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
+        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
+
+        dimensions.getPadding().setLeft(paddingLeft.toPx());
+        dimensions.getPadding().setRight(paddingRight.toPx());
+
+        dimensions.getMargin().setLeft(marginLeft.toPx());
+        dimensions.getMargin().setRight(marginRight.toPx());
+
+        dimensions.getBorder().setLeft(borderLeft.toPx());
+        dimensions.getBorder().setRight(borderRight.toPx());
+
+        //calculate position
+
+        dimensions.getMargin().setTop(sn.lookup(new Length(), "margin-top", "margin").toPx());
+        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
+
+        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
+        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
+
+        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
+        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
+
+        dimensions.getContent().setX(
+                dimensions.getMargin().getLeft() + dimensions.getPadding().getLeft() + dimensions.getBorder().getLeft()
+                        + containingBlock.getContent().width() + containingBlock.getContent().x()
+        );
+        dimensions.getContent().setY(
+                dimensions.getMargin().getTop() + dimensions.getBorder().getTop()
+                        + containingBlock.getContent().y()
+        );
+
+        //layout children
+        for (LayoutBox child : children) {
+            child.layout(dimensions);
+            dimensions.getContent().setWidth(dimensions.getContent().width() + child.getDimensions().marginBox().width());
+        }
+        double minY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).min().getAsDouble();
+        double maxY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y() + c.getDimensions().getContent().height()).max().getAsDouble();
+        dimensions.getContent().setHeight((float) (maxY - minY));
+
 
     }
 
