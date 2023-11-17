@@ -22,6 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.windows.MOUSEINPUT;
+import org.w3c.dom.Text;
 
 
 import java.io.BufferedReader;
@@ -176,6 +177,29 @@ public class Main {
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             surface.draw(canvas, 0,0,rawPaint);
+
+
+            Font f = new Font();
+            short[] glyphs = f.getStringGlyphs("text");
+            float[] glyphsWidths = f.getWidths(glyphs);
+            float[] glyphPositions = new float[glyphsWidths.length];
+            float distance = 0;
+            for (int i = 0; i < glyphsWidths.length; i++) {
+                if (i > 0) {
+                    distance += 1;
+                }
+                glyphPositions[i] = distance;
+                distance += glyphsWidths[i];
+            }
+
+            for (int i = 0; i < glyphPositions.length; i++) {
+                canvas.drawRect(new Rect(glyphPositions[i], 10, glyphPositions[i]+1,11 ), rawPaint);
+
+            }
+
+            TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphPositions, 0, f);
+            rawPaint.setColor4f(new Color4f(255,255,255,255));
+            canvas.drawTextBlob(tb, 0,10, rawPaint);
 
 
             context.flush();
