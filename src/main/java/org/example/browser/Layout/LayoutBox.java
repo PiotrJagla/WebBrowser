@@ -107,34 +107,7 @@ public class LayoutBox {
         StyledNode sn = box.getStyledNode();
 
         //calculate width
-        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
-        Value marginRight= sn.lookup(new Length(), "margin-right", "margin");
-
-        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
-        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
-
-        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
-        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
-
-        dimensions.getPadding().setLeft(paddingLeft.toPx());
-        dimensions.getPadding().setRight(paddingRight.toPx());
-
-        dimensions.getMargin().setLeft(marginLeft.toPx());
-        dimensions.getMargin().setRight(marginRight.toPx());
-
-        dimensions.getBorder().setLeft(borderLeft.toPx());
-        dimensions.getBorder().setRight(borderRight.toPx());
-
-        //calculate position
-
-        dimensions.getMargin().setTop(sn.lookup(new Length(), "margin-top", "margin").toPx());
-        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
-
-        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
-        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
-
-        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
-        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
+        dimensions.setAll(sn);
 
         dimensions.getContent().setX(
                 dimensions.getMargin().getLeft() + dimensions.getPadding().getLeft() + dimensions.getBorder().getLeft()
@@ -153,8 +126,6 @@ public class LayoutBox {
         double minY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y()).min().getAsDouble();
         double maxY = children.stream().mapToDouble(c -> c.getDimensions().marginBox().y() + c.getDimensions().getContent().height()).max().getAsDouble();
         dimensions.getContent().setHeight((float) (maxY - minY));
-
-
     }
 
 
@@ -171,34 +142,9 @@ public class LayoutBox {
     private void layoutBlock_InlineContext(Dimensions containingBlock) {
         StyledNode sn = box.getStyledNode();
 
-        Value marginLeft = sn.lookup(new Length(), "margin-left", "margin");
-        Value marginRight = sn.lookup(new Length(), "margin-right", "margin");
-
-        Value borderLeft = sn.lookup(new Length(), "border-left-width", "border-width");
-        Value borderRight = sn.lookup(new Length(), "border-right-width", "border-width");
-
-        Value paddingLeft = sn.lookup(new Length(), "padding-left", "padding");
-        Value paddingRight = sn.lookup(new Length(), "padding-right", "padding");
-
-        dimensions.getPadding().setLeft(paddingLeft.toPx());
-        dimensions.getPadding().setRight(paddingRight.toPx());
-
-        dimensions.getMargin().setLeft(marginLeft.toPx());
-        dimensions.getMargin().setRight(marginRight.toPx());
-
-        dimensions.getBorder().setLeft(borderLeft.toPx());
-        dimensions.getBorder().setRight(borderRight.toPx());
+        dimensions.setAll(sn);
 
         //calculate position
-        dimensions.getMargin().setTop(sn.lookup(new Length(),"margin-top", "margin").toPx());
-        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
-
-        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
-        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
-
-        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
-        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
-
         dimensions.getContent().setX(
                 dimensions.getMargin().getLeft() + dimensions.getBorder().getLeft() + dimensions.getPadding().getLeft()
                 + containingBlock.getContent().x()
@@ -220,7 +166,10 @@ public class LayoutBox {
 
         //calculate inline width
 
-        float total = (float)List.of(marginLeft, marginRight, borderLeft, borderRight, paddingLeft, paddingRight).stream().mapToDouble(e -> e.toPx()).sum();
+        float total = dimensions.getBorder().getLeft() + dimensions.getBorder().getRight()
+                + dimensions.getMargin().getLeft() + dimensions.getMargin().getRight()
+                + dimensions.getPadding().getLeft() + dimensions.getPadding().getRight();
+
         dimensions.getContent().setWidth(containingBlock.getContent().width() - total);
 
 
@@ -308,21 +257,14 @@ public class LayoutBox {
 
         dimensions.getMargin().setLeft(marginLeft.toPx());
         dimensions.getMargin().setRight(marginRight.toPx());
-
     }
 
     private void calculateBlockPosition(Dimensions containingBlock) {
         StyledNode sn = getBox().getStyledNode();
 
 
-        dimensions.getMargin().setTop(sn.lookup(new Length(),"margin-top", "margin").toPx());
-        dimensions.getMargin().setBottom(sn.lookup(new Length(), "margin-bottom", "margin").toPx());
-
-        dimensions.getBorder().setTop(sn.lookup(new Length(), "border-top-width", "border-width").toPx());
-        dimensions.getBorder().setBottom(sn.lookup(new Length(), "border-bottom-width", "border-width").toPx());
-
-        dimensions.getPadding().setTop(sn.lookup(new Length(), "padding-top", "padding").toPx());
-        dimensions.getPadding().setBottom(sn.lookup(new Length(), "padding-bottom", "padding").toPx());
+        dimensions.setTop(sn);
+        dimensions.setBottom(sn);
 
         dimensions.getContent().setX( containingBlock.getContent().x() +
                 dimensions.getMargin().getLeft() +
