@@ -25,7 +25,7 @@ public class RenderingPaint {
     private void renderLayoutBox(List<DisplayCommand> list, LayoutBox layoutRoot) {
         renderBackground(list, layoutRoot);
         renderText(list,layoutRoot);
-//        renderBorders(list, layoutRoot);
+        renderBorders(list, layoutRoot);
 
         for (LayoutBox child : layoutRoot.getChildren()) {
             renderLayoutBox(list,child);
@@ -42,20 +42,17 @@ public class RenderingPaint {
 
     private void renderBackground(List<DisplayCommand> list, LayoutBox layoutBox) {
         CSSColor color = getColor(layoutBox, "background");
+        SolidColor sc;
         if(color != null) {
-            SolidColor sc = new SolidColor();
+            sc = new SolidColor();
             sc.setColor(color);
-            sc.setRect(layoutBox.getDimensions().borderBox());
-            list.add(sc);
         }
         else {
-            SolidColor sc = new SolidColor();
-
+            sc = new SolidColor();
             sc.setColor(new CSSColor());
-            sc.setRect(layoutBox.getDimensions().borderBox());
-            list.add(sc);
-
         }
+        sc.setRect(layoutBox.getDimensions().borderBox());
+        list.add(sc);
     }
 
     private void renderBorders(List<DisplayCommand> list, LayoutBox layoutRoot) {
@@ -117,9 +114,6 @@ public class RenderingPaint {
                 Value v = layoutBox.getBox().getStyledNode().value(name);
                 if(v instanceof CSSColor) {
                     return (CSSColor) v;
-                }
-                else {
-                    return null;
                 }
             default:
                 return null;

@@ -1,21 +1,13 @@
 * {
-    padding: 20px;
 }
 
 .i{
     display: inline;
+    background: #000000;
 }
 
 .b{
-}
-
-.a{
-}
-
-.d{
-}
-
-.c{
+    background: #000000;
 }
 
 

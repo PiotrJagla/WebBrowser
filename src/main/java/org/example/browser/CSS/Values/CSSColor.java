@@ -4,9 +4,9 @@ package org.example.browser.CSS.Values;
 import org.example.browser.Utils;
 
 public class CSSColor extends Value{
-    private int r = Utils.getRandomInt(0,255);
-    private int g = Utils.getRandomInt(0,255);
-    private int b = Utils.getRandomInt(0,255);
+    private int r = 255;
+    private int g = 255;
+    private int b = 255;
     private int a = 255;
 
     public int getR() {
