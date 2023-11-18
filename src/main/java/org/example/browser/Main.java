@@ -179,7 +179,7 @@ public class Main {
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             surface.draw(canvas, 0,0,rawPaint);
 
-            Text t = new Text("to jest napis", 0,0, new Font());
+            Text t = new Text("apjgq", 0,0, new Font());
 
             Rectangle r = t.getBounds();
             rawPaint.setColor4f(new Color4f(255,255,255,255));
@@ -187,6 +187,16 @@ public class Main {
 
             rawPaint.setColor4f(new Color4f(0,255,255,255));
             t.renderText(canvas,rawPaint);
+
+            t = new Text("aaaaAA", 0,20, new Font());
+
+            r = t.getBounds();
+            rawPaint.setColor4f(new Color4f(255,255,255,255));
+            canvas.drawRect(new Rect(r.x(), r.y(), r.x() + r.width(), r.y() + r.height()),rawPaint);
+
+            rawPaint.setColor4f(new Color4f(0,255,255,255));
+            t.renderText(canvas,rawPaint);
+
 
 
 
