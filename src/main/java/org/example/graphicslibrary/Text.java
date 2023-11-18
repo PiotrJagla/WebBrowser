@@ -15,7 +15,7 @@ public class Text {
     private float[] glyphsXPositions;
     private Rectangle textBounds;
 
-    private float textShift;
+    private float properTextShift;
 
     public Text(String text, float x, float y, Font f) {
         this.text = new StringBuilder(text);
@@ -33,11 +33,12 @@ public class Text {
             glyphsXPositions[i] = distance;
             distance += glyphsWidths[i];
         }
-        textShift = calculateMinTop();
-        textBounds = new Rectangle(x, y, distance, calculateMaxHeight());
+        Rect r = calculateBounds();
+        properTextShift = -r.getTop();
+        textBounds = new Rectangle(x, y, distance, r.getBottom() - r.getTop());
     }
 
-    private float calculateMaxHeight() {
+    private Rect calculateBounds() {
         Rect[] rects = font.getBounds(glyphs);
         float minTop = Float.MAX_VALUE;
         float maxBottom = Float.MIN_VALUE;
@@ -50,25 +51,12 @@ public class Text {
                 maxBottom = r.getBottom();
             }
         }
-        return maxBottom - minTop;
+        return new Rect(x, minTop, x + glyphsXPositions[glyphsXPositions.length-1], maxBottom);
     }
 
-    private float calculateMinTop() {
-        Rect[] rects = font.getBounds(glyphs);
-        float minTop = Float.MAX_VALUE;
-        float maxBottom = Float.MIN_VALUE;
-        for (int i = 0; i < rects.length; i++) {
-            Rect r = rects[i];
-            if(minTop > r.getTop()) {
-                minTop = r.getTop();
-            }
-            if(maxBottom < r.getBottom()) {
-                maxBottom = r.getBottom();
-            }
-        }
-        return -minTop;
+    public String getText() {
+        return text.toString();
     }
-
 
     public Rectangle getBounds() {
         return textBounds;
@@ -76,7 +64,7 @@ public class Text {
 
     public void renderText(Canvas canvas, Paint rawPaint){
         TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphsXPositions, 0, font);
-        canvas.drawTextBlob(tb, textBounds.x(),textBounds.y() + textShift, rawPaint);
+        canvas.drawTextBlob(tb, textBounds.x(),textBounds.y() + properTextShift, rawPaint);
     }
 
 }

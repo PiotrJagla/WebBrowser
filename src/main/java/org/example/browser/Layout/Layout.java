@@ -3,6 +3,7 @@ package org.example.browser.Layout;
 
 import org.example.browser.HTML.TextNode;
 import org.example.browser.Style.StyledNode;
+import org.example.graphicslibrary.Text;
 
 import java.util.List;
 
@@ -30,6 +31,12 @@ public class Layout {
                 break;
         }
         node.setBox(new Box(nodeDisplay, styledNode));
+        if(styledNode.getNode() instanceof TextNode textNode) {
+
+            Rectangle contentBounds = textNode.getBounds();
+            node.getDimensions().getContent().setHeight(contentBounds.height());
+            node.getDimensions().getContent().setWidth(contentBounds.width());
+        }
 
 
         for (StyledNode child : styledNode.getChildren()) {

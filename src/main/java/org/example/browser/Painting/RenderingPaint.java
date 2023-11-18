@@ -1,11 +1,15 @@
 package org.example.browser.Painting;
 
 
+import io.github.humbleui.skija.Font;
 import org.example.browser.CSS.Values.CSSColor;
 import org.example.browser.CSS.Values.Value;
+import org.example.browser.HTML.Node;
+import org.example.browser.HTML.TextNode;
 import org.example.browser.Layout.Dimensions;
 import org.example.browser.Layout.LayoutBox;
 import org.example.browser.Layout.Rectangle;
+import org.example.graphicslibrary.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,7 @@ public class RenderingPaint {
 
     private void renderLayoutBox(List<DisplayCommand> list, LayoutBox layoutRoot) {
         renderBackground(list, layoutRoot);
+        renderText(list,layoutRoot);
 //        renderBorders(list, layoutRoot);
 
         for (LayoutBox child : layoutRoot.getChildren()) {
@@ -27,19 +32,27 @@ public class RenderingPaint {
         }
     }
 
-    private void renderBackground(List<DisplayCommand> list, LayoutBox layoutRoot) {
-        CSSColor color = getColor(layoutRoot, "background");
+    private void renderText(List<DisplayCommand> list, LayoutBox layoutBox) {
+        if(layoutBox.getBox().getStyledNode().getNode() instanceof TextNode textNode) {
+            Text text = new Text(textNode.getText(), layoutBox.getDimensions().borderBox().x(), layoutBox.getDimensions().borderBox().y(), new Font());
+            list.add(new SolidText().setText(text));
+        }
+    }
+
+
+    private void renderBackground(List<DisplayCommand> list, LayoutBox layoutBox) {
+        CSSColor color = getColor(layoutBox, "background");
         if(color != null) {
             SolidColor sc = new SolidColor();
             sc.setColor(color);
-            sc.setRect(layoutRoot.getDimensions().borderBox());
+            sc.setRect(layoutBox.getDimensions().borderBox());
             list.add(sc);
         }
         else {
             SolidColor sc = new SolidColor();
 
             sc.setColor(new CSSColor());
-            sc.setRect(layoutRoot.getDimensions().borderBox());
+            sc.setRect(layoutBox.getDimensions().borderBox());
             list.add(sc);
 
         }

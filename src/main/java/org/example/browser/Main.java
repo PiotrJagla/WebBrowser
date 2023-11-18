@@ -93,7 +93,7 @@ public class Main {
         //HTML htmlParser
         String HTMLInput = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader("index.html"));
+            BufferedReader br = new BufferedReader(new FileReader("index2.html"));
             String line;
             while((line = br.readLine()) != null) {
                 HTMLInput += line;
@@ -160,18 +160,7 @@ public class Main {
             rawPaint.setColor4f(new Color4f(255, 255, 255, 155));
             canvas.drawRect(new Rect(40,40, 40+700, 40+500), rawPaint);
             for (DisplayCommand d : list) {
-                SolidColor sc = (SolidColor) d;
-                Rectangle r = sc.getRect();
-
-                CSSColor c = sc.getColor();
-                Color4f c4f = new Color4f(c.getR()/255.0f, c.getG()/255.0f, c.getB()/255.0f, c.getA()/255.0f);
-                rawPaint.setColor4f(c4f);
-                canvas.drawRect(new Rect(r.x(),r.y(),r.x()+r.width(),r.y()+r.height()), rawPaint);
-
-                if(x <= r.x() + r.width() && x >= r.x() && y >= r.y() && y <= r.y() + r.height()) {
-                    System.out.println("Collision");
-                }
-
+                d.display(canvas,rawPaint);
 
             }
             rawPaint.setColor4f(new Color4f(0,255,255,255));

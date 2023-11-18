@@ -1,18 +1,24 @@
 package org.example.browser.HTML;
 
 
+import io.github.humbleui.skija.Font;
+import org.example.browser.Layout.Rectangle;
+import org.example.graphicslibrary.Text;
+
 public class TextNode extends Node{
-    private String text;
+    private Text text;
 
     public TextNode(String text) {
-        this.text = text;
+
+        this.text = new Text(text,0,0, new Font());
     }
 
     public String getText() {
-        return text;
+        return text.getText();
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public Rectangle getBounds() {
+        return text.getBounds();
     }
+
 }
