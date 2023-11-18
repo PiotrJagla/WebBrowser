@@ -1,11 +1,24 @@
 package org.example.browser.Layout;
 
 
+import org.w3c.dom.css.Rect;
+
 public class Rectangle{
     private float x;
     private float y;
     private float width;
     private float height;
+
+    public Rectangle() {
+
+    }
+
+    public Rectangle(float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
     public float x() {
         return x;

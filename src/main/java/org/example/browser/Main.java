@@ -17,16 +17,17 @@ import org.example.browser.Painting.RenderingPaint;
 import org.example.browser.Painting.SolidColor;
 import org.example.browser.Style.Style;
 import org.example.browser.Style.StyledNode;
+import org.example.graphicslibrary.Text;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.windows.MOUSEINPUT;
-import org.w3c.dom.Text;
 
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.nio.DoubleBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -178,34 +179,82 @@ public class Main {
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             surface.draw(canvas, 0,0,rawPaint);
 
+            Text t = new Text("to jest napis", 0,0, new Font());
 
-            Font f = new Font();
-            short[] glyphs = f.getStringGlyphs("text");
-            float[] glyphsWidths = f.getWidths(glyphs);
-            float[] glyphPositions = new float[glyphsWidths.length];
-            float distance = 0;
-            for (int i = 0; i < glyphsWidths.length; i++) {
-                if (i > 0) {
-                    distance += 1;
-                }
-                glyphPositions[i] = distance;
-                distance += glyphsWidths[i];
-            }
-
-            for (int i = 0; i < glyphPositions.length; i++) {
-                canvas.drawRect(new Rect(glyphPositions[i], 10, glyphPositions[i]+1,11 ), rawPaint);
-
-            }
-
-            TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphPositions, 0, f);
+            Rectangle r = t.getBounds();
             rawPaint.setColor4f(new Color4f(255,255,255,255));
-            canvas.drawTextBlob(tb, 0,10, rawPaint);
+            canvas.drawRect(new Rect(r.x(), r.y(), r.x() + r.width(), r.y() + r.height()),rawPaint);
+
+            rawPaint.setColor4f(new Color4f(0,255,255,255));
+            t.renderText(canvas,rawPaint);
+
 
 
             context.flush();
             glfwSwapBuffers(windowHandle); // wait for v-sync
             glfwPollEvents();
         }
+    }
+
+    private static void renderText(Font font, Canvas canvas, Paint rawPaint, float x, float y, String text) {
+        short[] glyphs = font.getStringGlyphs(text);
+        float[] glyphsWidths = font.getWidths(glyphs);
+        float[] glyphPositions = new float[glyphsWidths.length];
+        float distance = 0;
+        for (int i = 0; i < glyphsWidths.length; i++) {
+            if (i > 0) {
+                distance += 1;
+            }
+            glyphPositions[i] = distance;
+            distance += glyphsWidths[i];
+        }
+
+        Rectangle r = getTextBounds(x,y, text, font);
+        canvas.drawRect(new Rect(r.x(), r.y(), r.x()+r.width(), r.y()+r.height()), rawPaint);
+
+        TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphPositions, 0, font);
+        rawPaint.setColor4f(new Color4f(0,0,0,255));
+        canvas.drawTextBlob(tb, x,y, rawPaint);
+
+    }
+
+    private static Rectangle getTextBounds(float x, float y, String text, Font f) {
+        short[] glyphs = f.getStringGlyphs(text);
+        float[] glyphsWidths = f.getWidths(glyphs);
+        float[] glyphPositions = new float[glyphsWidths.length];
+        float distance = 0;
+        for (int i = 0; i < glyphsWidths.length; i++) {
+            if (i > 0) {
+                distance += 1;
+            }
+            glyphPositions[i] = distance;
+            distance += glyphsWidths[i];
+        }
+        Rect[] rects = f.getBounds(glyphs);
+        float minLeft = Float.MAX_VALUE;
+        float maxRight = Float.MIN_VALUE;
+        float minTop = Float.MAX_VALUE;
+        float maxBottom = Float.MIN_VALUE;
+        for (int i = 0; i < rects.length; i++) {
+            Rect r = rects[i];
+            float currentLeft = x + glyphPositions[i] + r.getLeft();
+            float currentTop = y+r.getTop();
+            float currentRight = x+r.getRight()+glyphPositions[i];
+            float currentBottom = y+r.getBottom();
+            if(minLeft > currentLeft) {
+                minLeft = currentLeft;
+            }
+            if(maxRight < currentRight) {
+                maxRight = currentRight;
+            }
+            if(minTop > currentTop) {
+                minTop = currentTop;
+            }
+            if(maxBottom < currentBottom) {
+                maxBottom = currentBottom;
+            }
+        }
+        return new Rectangle(minLeft, minTop, maxRight - minLeft ,maxBottom - minTop);
     }
 
 
