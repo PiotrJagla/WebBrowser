@@ -3,22 +3,46 @@
     <head>
         <title>test page</title>
         <style>
+            *{
+                font-size: 50px;
+                padding:10px;
+            }
+
             .b{
                 background: yellow;
+                display:block;
             }
             .o{
+                background: blue;
+            }
+            .i{
+                display: inline;
+                background:orange;
+            }
+            .i2{
+                display: inline;
+                background:green;
             }
         </style>
     </head>
     <body>
-        <div class="b">
-            <div>
-                AAAAAA
-            </div>
-            Some
-        </div>
         <div class="o">
-            Text
+            <div>
+                <div class="i2">This is</div>
+                <div class="i">inline</div>
+                <div class="i2"></div>
+                <div class="i">after</div>
+            </div>
+                <div class="b">
+                    some
+                </div>
+                <div class="b">
+                    other
+                </div>
+            <div>
+                <div class="i">after</div>
+                <div class="i">after inline block</div>
+            </div>
         </div>
     </body>
 </html>

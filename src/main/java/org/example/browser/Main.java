@@ -49,7 +49,7 @@ public class Main {
         glfwInit();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        long windowHandle = glfwCreateWindow(width, height, "Skija LWJGL Demo", NULL, NULL);
+        long windowHandle = glfwCreateWindow(width, height, "Toy web browser", NULL, NULL);
         glfwMakeContextCurrent(windowHandle);
         glfwSwapInterval(1); // Enable v-sync
         glfwShowWindow(windowHandle);

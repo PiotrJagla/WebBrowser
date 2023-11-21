@@ -1,13 +1,24 @@
 * {
+    padding:20px;
 }
 
 .i{
     display: inline;
-    background: #000000;
+    background: #00ff00;
+}
+
+.i2{
+    display: inline;
+    background: #0000ff;
 }
 
 .b{
-    background: #000000;
+    background: #ffff00;
+    display: block;
+}
+
+.y{
+    background: #ff00ff;
 }
 
 

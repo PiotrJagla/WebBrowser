@@ -4,10 +4,10 @@ package org.example.browser.CSS.Values;
 import org.example.browser.Utils;
 
 public class CSSColor extends Value{
-    private int r = 255;
-    private int g = 255;
-    private int b = 255;
-    private int a = 255;
+    private int r = 0;
+    private int g = 0;
+    private int b = 0;
+    private int a = 0;
 
     public int getR() {
         return r;

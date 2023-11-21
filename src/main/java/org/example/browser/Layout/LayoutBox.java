@@ -74,6 +74,9 @@ public class LayoutBox {
         dimensions.getBorder().setLeft(borderLeft.toPx());
         dimensions.getBorder().setRight(borderRight.toPx());
 
+        float total = (float)List.of(marginLeft, marginRight, borderLeft, borderRight, paddingLeft, paddingRight).stream().mapToDouble(e -> e.toPx()).sum();
+        float underflow = containingBlock.getContent().width() - total;
+        dimensions.getContent().setWidth(underflow);
 
         //calculate position
 
@@ -131,6 +134,9 @@ public class LayoutBox {
 
     private boolean isLineBox() {
         if(children.isEmpty()) {
+            return false;
+        }
+        if(children.get(0).getBox().getBoxType().equals(BoxType.BlockNode)) {
             return false;
         }
         return !children.stream().
@@ -306,10 +312,10 @@ public class LayoutBox {
         }
         switch (box.getBoxType()) {
             case InlineNode:
-            case AnonymousBlockNode:
             case AnonymousInlineNode:
                 return this;
             case BlockNode:
+            case AnonymousBlockNode:
                 if(children.isEmpty()) {
                     children.add(new LayoutBox(new Box().setBoxType(BoxType.AnonymousBlockNode)));
                 }
