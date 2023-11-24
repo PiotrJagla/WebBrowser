@@ -16,9 +16,6 @@ public class Specifity{
         return a;
     }
 
-    public void setA(int a) {
-        this.a = a;
-    }
 
     public int getB() {
         return b;
@@ -32,7 +29,4 @@ public class Specifity{
         return c;
     }
 
-    public void setC(int c) {
-        this.c = c;
-    }
 }

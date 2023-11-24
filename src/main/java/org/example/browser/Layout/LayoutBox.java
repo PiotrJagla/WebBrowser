@@ -332,9 +332,6 @@ public class LayoutBox {
         }
     }
 
-    public LayoutBox getParentBox() {
-        return parentBox;
-    }
 
     public LayoutBox setParentBox(LayoutBox parentBox) {
         this.parentBox = parentBox;

@@ -38,7 +38,4 @@ public class SimpleSelector extends CSSSelector {
         return classes;
     }
 
-    public void setClasses(List<String> classes) {
-        this.classes = classes;
-    }
 }
