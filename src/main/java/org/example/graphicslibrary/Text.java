@@ -3,6 +3,7 @@ package org.example.graphicslibrary;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.types.Rect;
 import org.example.browser.Layout.Rectangle;
+import org.example.browser.Utils;
 
 public class Text {
     private StringBuilder text;
@@ -17,11 +18,23 @@ public class Text {
 
     private float properTextShift;
 
+    private Color4f textColor;
+
     public Text(String text, float x, float y, Font f) {
         this.text = new StringBuilder(text);
         this.font = f;
         this.x = x;
         this.y = y;
+        this.textColor = new Color4f(255,255,255,255);
+        setupText(text);
+    }
+
+    private void setupText(String text) {
+        if(text.equals("")){
+            textBounds = new Rectangle(x,y,0,0);
+            return;
+        }
+
         glyphs = font.getStringGlyphs(text);
         glyphsWidths = font.getWidths(glyphs);
         glyphsXPositions = new float[glyphsWidths.length];
@@ -36,6 +49,20 @@ public class Text {
         Rect r = calculateBounds();
         properTextShift = -r.getTop();
         textBounds = new Rectangle(x, y, distance, r.getBottom() - r.getTop());
+    }
+    public void setText(String newText) {
+        text = new StringBuilder(newText);
+        setupText(newText);
+    }
+
+    public void setTextColor(Color4f textColor) {
+        this.textColor = textColor;
+    }
+
+    public void setPos(float x, float y) {
+        this.x = x;
+        this.y = y;
+        setupText(text.toString());
     }
 
     private Rect calculateBounds() {
@@ -63,8 +90,11 @@ public class Text {
     }
 
     public void renderText(Canvas canvas, Paint rawPaint){
+        Color4f prevColor = rawPaint.getColor4f();
+        rawPaint.setColor4f(textColor);
         TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphsXPositions, 0, font);
         canvas.drawTextBlob(tb, textBounds.x(),textBounds.y() + properTextShift, rawPaint);
+        rawPaint.setColor4f(prevColor);
     }
 
 }

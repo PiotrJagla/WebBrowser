@@ -17,6 +17,7 @@ import org.example.browser.Painting.RenderingPaint;
 import org.example.browser.Painting.SolidColor;
 import org.example.browser.Style.Style;
 import org.example.browser.Style.StyledNode;
+import org.example.graphicslibrary.Button;
 import org.example.graphicslibrary.Text;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -136,6 +137,9 @@ public class Main {
         Canvas canvas = surface.getCanvas();
         Paint rawPaint = new Paint().setColor(0xFFFFFFFF);
 
+
+
+        Button button = new Button(new Rectangle(1,1,20,20));
 // Render loop
         while (!glfwWindowShouldClose(windowHandle)) {
 
@@ -161,30 +165,19 @@ public class Main {
             canvas.drawRect(new Rect(40,40, 40+700, 40+500), rawPaint);
             for (DisplayCommand d : list) {
                 d.display(canvas,rawPaint);
-
             }
             rawPaint.setColor4f(new Color4f(0,255,255,255));
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             canvas.drawRect(new Rect(0,300, 40, 340), rawPaint);
             surface.draw(canvas, 0,0,rawPaint);
 
-            Text t = new Text("apjgq", 0,0, new Font());
 
-            Rectangle r = t.getBounds();
-            rawPaint.setColor4f(new Color4f(255,255,255,255));
-            canvas.drawRect(new Rect(r.x(), r.y(), r.x() + r.width(), r.y() + r.height()),rawPaint);
 
-            rawPaint.setColor4f(new Color4f(0,255,255,255));
-            t.renderText(canvas,rawPaint);
+            rawPaint.setColor4f(new Color4f(255,0,255,255));
+            button.draw(canvas,rawPaint);
 
-            t = new Text("aaaaAA", 0,20, new Font());
+            button.isPressed();
 
-            r = t.getBounds();
-            rawPaint.setColor4f(new Color4f(255,255,255,255));
-            canvas.drawRect(new Rect(r.x(), r.y(), r.x() + r.width(), r.y() + r.height()),rawPaint);
-
-            rawPaint.setColor4f(new Color4f(0,255,255,255));
-            t.renderText(canvas,rawPaint);
 
 
 
