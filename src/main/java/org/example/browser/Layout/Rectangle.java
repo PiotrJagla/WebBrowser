@@ -1,6 +1,7 @@
 package org.example.browser.Layout;
 
 
+import io.github.humbleui.types.Point;
 import org.w3c.dom.css.Rect;
 
 public class Rectangle{
@@ -54,5 +55,10 @@ public class Rectangle{
     public Rectangle setHeight(float height) {
         this.height = height;
         return this;
+    }
+
+    public boolean contains(Point p) {
+        return p.getX() >= x && p.getX() <= x + width &&
+                p.getY() >= y && p.getY() <= y + height;
     }
 }

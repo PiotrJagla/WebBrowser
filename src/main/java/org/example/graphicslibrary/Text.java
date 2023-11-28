@@ -3,7 +3,6 @@ package org.example.graphicslibrary;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.types.Rect;
 import org.example.browser.Layout.Rectangle;
-import org.example.browser.Utils;
 
 public class Text {
     private StringBuilder text;
@@ -89,12 +88,14 @@ public class Text {
         return textBounds;
     }
 
-    public void renderText(Canvas canvas, Paint rawPaint){
-        Color4f prevColor = rawPaint.getColor4f();
-        rawPaint.setColor4f(textColor);
-        TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphsXPositions, 0, font);
-        canvas.drawTextBlob(tb, textBounds.x(),textBounds.y() + properTextShift, rawPaint);
-        rawPaint.setColor4f(prevColor);
+    public void draw(Canvas canvas, Paint rawPaint){
+        if(!text.toString().equals("")){
+            Color4f prevColor = rawPaint.getColor4f();
+            rawPaint.setColor4f(textColor);
+            TextBlob tb = TextBlob.makeFromPosH(glyphs, glyphsXPositions, 0, font);
+            canvas.drawTextBlob(tb, textBounds.x(),textBounds.y() + properTextShift, rawPaint);
+            rawPaint.setColor4f(prevColor);
+        }
     }
 
 }

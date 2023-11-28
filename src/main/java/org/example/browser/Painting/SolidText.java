@@ -20,6 +20,6 @@ public class SolidText extends DisplayCommand{
     @Override
     public void display(Canvas canvas, Paint rawPaint) {
         rawPaint.setColor4f(new Color4f(0,0,0,255));
-        text.renderText(canvas,rawPaint);
+        text.draw(canvas,rawPaint);
     }
 }
